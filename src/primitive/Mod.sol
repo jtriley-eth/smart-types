@@ -5,7 +5,6 @@ pragma solidity ^0.8.20;
 
 import {Constants} from "src/primitive/Constants.sol";
 import {Error} from "src/primitive/Error.sol";
-import {From} from "src/primitive/From.sol";
 import {Primitive} from "src/primitive/Primitive.sol";
 import {To} from "src/primitive/To.sol";
 
