@@ -2,14 +2,29 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
+import {Fn} from "src/fn/Fn.sol";
+import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
+import {Vec} from "src/vector/Vec.sol";
 
 library To {
+    function toVec(Vec self) internal pure returns (Primitive) {
+        return Primitive.wrap(Vec.unwrap(self));
+    }
+
+    function toPrimitive(SmartPointer self) internal pure returns (Primitive) {
+        return Primitive.wrap(SmartPointer.unwrap(self));
+    }
+
+    function toPrimitive(Fn self) internal pure returns (Primitive) {
+        return Primitive.wrap(Fn.unwrap(self));
+    }
+
     function toPrimitive(bool self) internal pure returns (Primitive p) {
         assembly ("memory-safe") {
             p := self
         }
     }
-
+ 
     function toPrimitive(address self) internal pure returns(Primitive) {
         return Primitive.wrap(uint160(self));
     }

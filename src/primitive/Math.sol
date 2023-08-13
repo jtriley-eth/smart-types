@@ -9,16 +9,16 @@ import {Constants} from "src/primitive/Constants.sol";
 using To for uint256;
 using To for int256;
 
-function eq(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.toUint256() == rhs.toUint256();
+function eq(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.toUint256() == rhs.toUint256()).toPrimitive();
 }
 
-function gt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.toUint256() > rhs.toUint256();
+function gt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.toUint256() > rhs.toUint256()).toPrimitive();
 }
 
-function lt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.toUint256() < rhs.toUint256();
+function lt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.toUint256() < rhs.toUint256()).toPrimitive();
 }
 
 function add(Primitive lhs, Primitive rhs) pure returns (Primitive) {
@@ -113,16 +113,20 @@ function signedModByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primit
     }
 }
 
+function isZero(Primitive self) pure returns (Primitive) {
+    return (self.toUint256() == 0).toPrimitive();
+}
+
 function extendSign(Primitive self, Primitive bits) pure returns (Primitive result) {
     if (bits > Constants.BIT_SIZE) revert Error.Overflow();
-    assembly ("memory-safe") {
+    assembly {
         result := signextend(div(bits, 8), self)
     }
 }
 
 function truncateSign(Primitive self, Primitive inputBits, Primitive outputBits) pure returns (Primitive result) {
     if (inputBits > Constants.BIT_SIZE || outputBits > inputBits) revert Error.Overflow();
-    assembly ("memory-safe") {
+    assembly {
         result := or(and(self, sub(shl(outputBits, 1), 1)), shl(sub(outputBits, 1), iszero(and(sub(inputBits, 1), self))))
     }
 }

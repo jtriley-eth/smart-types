@@ -2,9 +2,23 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
+import {Fn} from "src/fn/Fn.sol";
+import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
+import {Vec} from "src/vector/Vec.sol";
 import {Error} from "src/primitive/Error.sol";
 
 library From {
+    function toVec(Primitive self) internal pure returns (Vec) {
+        return Vec.wrap(self.toUint96());
+    }
+
+    function toSmartPointer(Primitive self) internal pure returns (SmartPointer) {
+        return SmartPointer.wrap(self.toUint64());
+    }
+
+    function toFn(Primitive self) internal pure returns (Fn) {
+        return Fn.wrap(self.toUint32());
+    }
 
     function toBool(Primitive self) internal pure returns (bool) {
         _validateBits(self, 1);

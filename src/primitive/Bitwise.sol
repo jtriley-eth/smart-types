@@ -32,6 +32,10 @@ function not(Primitive self) pure returns (Primitive) {
     return (~self.toUint256()).toPrimitive();
 }
 
+function mask(Primitive self, Primitive mask) pure returns (Primitive) {
+    return self & mask;
+}
+
 function retainBits(Primitive self, Primitive bits) pure returns (Primitive) {
     return self & (shl(Constants.ONE, bits) - Constants.ONE);
 }
