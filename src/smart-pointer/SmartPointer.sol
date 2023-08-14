@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
-import {To as PrimitiveTo} from "src/primitive/To.sol";
+import {As as PrimitiveAs} from "src/primitive/As.sol";
 import {Error} from "src/smart-pointer/Error.sol";
 
 // smart pointer metadata layout
@@ -12,21 +12,21 @@ import {Error} from "src/smart-pointer/Error.sol";
 // | 32  | 32  |
 type SmartPointer is uint64;
 
-using PrimitiveTo for SmartPointer global;
+using PrimitiveAs for SmartPointer global;
 using LibSmartPointer for SmartPointer global;
 
 library LibSmartPointer {
-    function toSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
-        return SmartPointer.wrap(ptr.shl(32).or(len));
+    function newSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
+        return SmartPointer.wrap(ptr.shl(Primitive.wrap(32)).or(len).asUint64());
     }
 
     function pointer(SmartPointer self) internal pure returns (Primitive) {
-        return self.toPrimitive()
+        return self.asPrimitive()
             .shr(Primitive.wrap(32));
     }
 
     function length(SmartPointer self) internal pure returns (Primitive) {
-        return self.toPrimitive().mask(Primitive.wrap(0xffffffff));
+        return self.asPrimitive().and(Primitive.wrap(0xffffffff));
     }
 
     function malloc(Primitive size) internal pure returns (SmartPointer) {
@@ -35,21 +35,11 @@ library LibSmartPointer {
             freeMemoryPointer := mload(0x40)
             mstore(0x40, add(freeMemoryPointer, size))
         }
-        return toSmartPointer(freeMemoryPointer, size);
+        return newSmartPointer(freeMemoryPointer, size);
     }
 
     function realloc(SmartPointer self, Primitive newLen) internal pure returns (SmartPointer) {
-        Primitive ptr = self.pointer();
-        Primitive len = self.length();
-        Primitive newPtr;
-        Primitive success;
-        assembly ("memory-safe") {
-            newPtr := mload(0x40)
-            mstore(0x40, add(newPtr, newLen))
-            success := staticcall(gas(), 0x04, ptr, len, newPtr, newLen)
-        }
-        if (success.falsy().toBool()) revert Error.MemoryCopy();
-        return toSmartPointer(newPtr, newLen);
+        return __pure(__realloc)(self, newLen);
     }
 
     function write(SmartPointer self, Primitive value) internal pure {
@@ -70,6 +60,30 @@ library LibSmartPointer {
         Primitive ptr = self.pointer().add(offset);
         assembly ("memory-safe") {
             value := mload(ptr)
+        }
+    }
+
+    function __realloc(SmartPointer self, Primitive newLen) private view returns (SmartPointer) {
+        Primitive ptr = self.pointer();
+        Primitive len = self.length();
+        Primitive newPtr;
+        Primitive success;
+        assembly ("memory-safe") {
+            newPtr := mload(0x40)
+            mstore(0x40, add(newPtr, newLen))
+            success := staticcall(gas(), 0x04, ptr, len, newPtr, newLen)
+        }
+        if (success.falsy().asBool()) revert Error.MemoryCopy();
+        return newSmartPointer(newPtr, newLen);
+    }
+
+    function __pure(
+        function (SmartPointer, Primitive) view returns (SmartPointer) impureFn
+    ) private pure returns (
+        function (SmartPointer, Primitive) pure returns (SmartPointer) pureFn
+    ) {
+        assembly {
+            pureFn := impureFn
         }
     }
 }
