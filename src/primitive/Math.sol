@@ -2,23 +2,24 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
-import {To} from "src/primitive/To.sol";
+import {As} from "src/primitive/As.sol";
 import {Error} from "src/primitive/Error.sol";
 import {Constants} from "src/primitive/Constants.sol";
 
-using To for uint256;
-using To for int256;
+using As for uint256;
+using As for int256;
+using As for bool;
 
 function eq(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    return (lhs.toUint256() == rhs.toUint256()).toPrimitive();
+    return (lhs.asUint256() == rhs.asUint256()).asPrimitive();
 }
 
 function gt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    return (lhs.toUint256() > rhs.toUint256()).toPrimitive();
+    return (lhs.asUint256() > rhs.asUint256()).asPrimitive();
 }
 
 function lt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    return (lhs.toUint256() < rhs.toUint256()).toPrimitive();
+    return (lhs.asUint256() < rhs.asUint256()).asPrimitive();
 }
 
 function add(Primitive lhs, Primitive rhs) pure returns (Primitive) {
@@ -64,69 +65,62 @@ function signedMod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
 }
 
 function signedLt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.toInt256() < rhs.toInt256();
+    return lhs.asInt256() < rhs.asInt256();
 }
 
 function signedGt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.toInt256() > rhs.toInt256();
+    return lhs.asInt256() > rhs.asInt256();
 }
 
 function addOverflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (lhs > Constants.MAX - rhs, (lhs.toUint256() + rhs.toUint256()).toPrimitive());
+        return (lhs.gt(Constants.MAX.sub(rhs)).asBool(), (lhs.asUint256() + rhs.asUint256()).asPrimitive());
     }
 }
 
 function subUnderflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (lhs < rhs, (lhs.toUint256() - rhs.toUint256()).toPrimitive());
+        return (lhs.lt(rhs).asBool(), (lhs.asUint256() - rhs.asUint256()).asPrimitive());
     }
 }
 
 function mulOverflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (lhs > Constants.ZERO && rhs > Constants.MAX / lhs, (lhs.toUint256() * rhs.toUint256()).toPrimitive());
+        return (lhs.gt(Constants.ZERO).and(rhs.gt(Constants.MAX / lhs)).asBool(), (lhs.asUint256() * rhs.asUint256()).asPrimitive());
     }
 }
 
 function divByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (rhs.toUint256() == 0, (lhs.toUint256() / rhs.toUint256()).toPrimitive());
+        return (rhs.asUint256() == 0, (lhs.asUint256() / rhs.asUint256()).asPrimitive());
     }
 }
 
 function modByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (rhs.toUint256() == 0, (lhs.toUint256() % rhs.toUint256()).toPrimitive());
+        return (rhs.asUint256() == 0, (lhs.asUint256() % rhs.asUint256()).asPrimitive());
     }
 }
 
 function signedDivByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (rhs.toUint256() == 0, (lhs.toInt256() / rhs.toInt256()).toPrimitive());
+        return (rhs.asUint256() == 0, (lhs.asInt256() / rhs.asInt256()).asPrimitive());
     }
 }
 
 function signedModByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (rhs.toUint256() == 0, (lhs.toInt256() % rhs.toInt256()).toPrimitive());
+        return (rhs.asUint256() == 0, (lhs.asInt256() % rhs.asInt256()).asPrimitive());
     }
 }
 
 function isZero(Primitive self) pure returns (Primitive) {
-    return (self.toUint256() == 0).toPrimitive();
+    return (self.asUint256() == 0).asPrimitive();
 }
 
 function extendSign(Primitive self, Primitive bits) pure returns (Primitive result) {
-    if (bits > Constants.BIT_SIZE) revert Error.Overflow();
+    if (bits.gt(Constants.BIT_SIZE).asBool()) revert Error.Overflow();
     assembly {
         result := signextend(div(bits, 8), self)
-    }
-}
-
-function truncateSign(Primitive self, Primitive inputBits, Primitive outputBits) pure returns (Primitive result) {
-    if (inputBits > Constants.BIT_SIZE || outputBits > inputBits) revert Error.Overflow();
-    assembly {
-        result := or(and(self, sub(shl(outputBits, 1), 1)), shl(sub(outputBits, 1), iszero(and(sub(inputBits, 1), self))))
     }
 }

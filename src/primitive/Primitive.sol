@@ -3,10 +3,10 @@ pragma solidity ^0.8.20;
 
 import {Constants} from "src/primitive/Constants.sol";
 import {From} from "src/primitive/From.sol";
-import {To} from "src/primitive/To.sol";
+import {As} from "src/primitive/As.sol";
 import {Error} from "src/primitive/Error.sol";
 import {eq, gt, lt, add, sub, mul, div, mod} from "src/primitive/Math.sol";
-import {shr, shl, and, or, xor, not, mask, retainBits, constrainBits} from "src/primitive/Bitwise.sol";
+import {shr, shl, and, or, xor, not, retainBits, constrainBits} from "src/primitive/Bitwise.sol";
 import {
     signedDiv,
     signedMod,
@@ -20,8 +20,7 @@ import {
     signedDivByAny,
     signedModByAny,
     isZero,
-    extendSign,
-    truncateSign
+    extendSign
 } from "src/primitive/Math.sol";
 import {truthy, falsy, logicalNot} from "src/primitive/Logical.sol";
 
@@ -30,9 +29,9 @@ type Primitive is uint256;
 using From for Primitive global;
 
 using {
-    eq as ==,
-    gt as >,
-    lt as <,
+    // eq as ==,    // solc requires `bool` return
+    // gt as >,     // solc requires `bool` return
+    // lt as <,     // solc requires `bool` return
     add as +,
     sub as -,
     mul as *,
@@ -58,7 +57,6 @@ using {
     not,
     shr,
     shl,
-    mask,
     retainBits,
     constrainBits,
     signedDiv,
@@ -74,7 +72,6 @@ using {
     signedModByAny,
     isZero,
     extendSign,
-    truncateSign,
     truthy,
     falsy,
     logicalNot
