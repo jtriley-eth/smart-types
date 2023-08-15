@@ -14,103 +14,114 @@ function eq(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     return (lhs.asUint256() == rhs.asUint256()).asPrimitive();
 }
 
+function neq(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.asUint256() != rhs.asUint256()).asPrimitive();
+}
+
 function gt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     return (lhs.asUint256() > rhs.asUint256()).asPrimitive();
+}
+
+function signedGt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.asInt256() > rhs.asInt256()).asPrimitive();
 }
 
 function lt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     return (lhs.asUint256() < rhs.asUint256()).asPrimitive();
 }
 
+function signedLt(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (lhs.asInt256() < rhs.asInt256()).asPrimitive();
+}
+
 function add(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool overflowed, Primitive result) = addOverflowing(lhs, rhs);
-    if (overflowed) revert Error.Overflow();
-    return result;
+    unchecked {
+        return (lhs.asUint256() + rhs.asUint256()).asPrimitive();
+    }
+}
+
+function addChecked(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    unchecked {
+        res = lhs.add(rhs);
+        if (res.lt(lhs).asBool()) revert Error.Overflow();
+    }
 }
 
 function sub(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool underflowed, Primitive result) = subUnderflowing(lhs, rhs);
-    if (underflowed) revert Error.Underflow();
-    return result;
+    unchecked {
+        return (lhs.asUint256() - rhs.asUint256()).asPrimitive();
+    }
+}
+
+function subChecked(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    unchecked {
+        res = lhs.sub(rhs);
+        if (res.gt(lhs).asBool()) revert Error.Underflow();
+    }
 }
 
 function mul(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool overflowed, Primitive result) = mulOverflowing(lhs, rhs);
-    if (overflowed) revert Error.Overflow();
-    return result;
+    unchecked {
+        return (lhs.asUint256() * rhs.asUint256()).asPrimitive();
+    }
+}
+
+function mulChecked(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    unchecked {
+        res = lhs.mul(rhs);
+        if (res.div(rhs).neq(lhs).asBool()) revert Error.Overflow();
+    }
 }
 
 function div(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool dividedByZero, Primitive result) = divByAny(lhs, rhs);
-    if (dividedByZero) revert Error.DivisionByZero();
-    return result;
+    unchecked {
+        return (lhs.asUint256() / rhs.asUint256()).asPrimitive();
+    }
 }
 
-function mod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool dividedByZero, Primitive result) = modByAny(lhs, rhs);
-    if (dividedByZero) revert Error.DivisionByZero();
-    return result;
+function divChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    unchecked {
+        if (rhs.isZero().asBool()) revert Error.DivisionByZero();
+        return lhs.div(rhs);
+    }
 }
 
 function signedDiv(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool dividedByZero, Primitive result) = signedDivByAny(lhs, rhs);
-    if (dividedByZero) revert Error.DivisionByZero();
-    return result;
+    unchecked {
+        return (lhs.asInt256() / rhs.asInt256()).asPrimitive();
+    }
+}
+
+function signedDivChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    unchecked {
+        if (rhs.isZero().asBool()) revert Error.DivisionByZero();
+        return lhs.signedDiv(rhs);
+    }
+}
+
+function mod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    unchecked {
+        return (lhs.asUint256() % rhs.asUint256()).asPrimitive();
+    }
+}
+
+function modChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    unchecked {
+        if (rhs.isZero().asBool()) revert Error.DivisionByZero();
+        return lhs.mod(rhs);
+    }
 }
 
 function signedMod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    (bool dividedByZero, Primitive result) = signedModByAny(lhs, rhs);
-    if (dividedByZero) revert Error.DivisionByZero();
-    return result;
-}
-
-function signedLt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.asInt256() < rhs.asInt256();
-}
-
-function signedGt(Primitive lhs, Primitive rhs) pure returns (bool) {
-    return lhs.asInt256() > rhs.asInt256();
-}
-
-function addOverflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
     unchecked {
-        return (lhs.gt(Constants.MAX.sub(rhs)).asBool(), (lhs.asUint256() + rhs.asUint256()).asPrimitive());
+        return (lhs.asInt256() % rhs.asInt256()).asPrimitive();
     }
 }
 
-function subUnderflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
+function signedModChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     unchecked {
-        return (lhs.lt(rhs).asBool(), (lhs.asUint256() - rhs.asUint256()).asPrimitive());
-    }
-}
-
-function mulOverflowing(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
-    unchecked {
-        return (lhs.gt(Constants.ZERO).and(rhs.gt(Constants.MAX / lhs)).asBool(), (lhs.asUint256() * rhs.asUint256()).asPrimitive());
-    }
-}
-
-function divByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
-    unchecked {
-        return (rhs.asUint256() == 0, (lhs.asUint256() / rhs.asUint256()).asPrimitive());
-    }
-}
-
-function modByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
-    unchecked {
-        return (rhs.asUint256() == 0, (lhs.asUint256() % rhs.asUint256()).asPrimitive());
-    }
-}
-
-function signedDivByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
-    unchecked {
-        return (rhs.asUint256() == 0, (lhs.asInt256() / rhs.asInt256()).asPrimitive());
-    }
-}
-
-function signedModByAny(Primitive lhs, Primitive rhs) pure returns (bool, Primitive) {
-    unchecked {
-        return (rhs.asUint256() == 0, (lhs.asInt256() % rhs.asInt256()).asPrimitive());
+        if (rhs.isZero().asBool()) revert Error.DivisionByZero();
+        return lhs.signedMod(rhs);
     }
 }
 

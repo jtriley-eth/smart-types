@@ -7,10 +7,6 @@ import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
 import {Vec} from "src/vector/Vec.sol";
 
 library As {
-    function asPrimitive(SmartPointer self) internal pure returns (Primitive) {
-        return Primitive.wrap(SmartPointer.unwrap(self));
-    }
-
     function asPrimitive(bool self) internal pure returns (Primitive p) {
         assembly ("memory-safe") {
             p := self

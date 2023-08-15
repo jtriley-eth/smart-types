@@ -2,16 +2,10 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
-import {Fn} from "src/fn/Fn.sol";
 import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
-import {Vec} from "src/vector/Vec.sol";
 import {Error} from "src/primitive/Error.sol";
 
 library From {
-    function asSmartPointer(Primitive self) internal pure returns (SmartPointer) {
-        return SmartPointer.wrap(self.asUint64());
-    }
-
     function asBool(Primitive self) internal pure returns (bool) {
         unchecked { return Primitive.unwrap(self) != 0; }
     }
