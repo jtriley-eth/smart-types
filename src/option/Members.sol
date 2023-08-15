@@ -8,18 +8,19 @@ enum Members {
     Some
 }
 
+using { asPrimitive } for Members global;
 using LibMembers for Members global;
 
 library LibMembers {
-    function asPrimitive(Members self) internal pure returns (Primitive p) {
-        assembly {
-            p := self
-        }
-    }
-
     function asMembers(Primitive self) internal pure returns (Members m) {
         assembly {
             m := self
         }
+    }
+}
+
+function asPrimitive(Members self) pure returns (Primitive p) {
+    assembly {
+        p := self
     }
 }
