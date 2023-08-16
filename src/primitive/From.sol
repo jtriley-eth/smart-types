@@ -246,6 +246,18 @@ library From {
         unchecked { return int64(int256(Primitive.unwrap(self))); }
     }
 
+    function asInt56(Primitive self) internal pure returns (int56) {
+        unchecked { return int56(int256(Primitive.unwrap(self))); }
+    }
+
+    function asInt48(Primitive self) internal pure returns (int48) {
+        unchecked { return int48(int256(Primitive.unwrap(self))); }
+    }
+
+    function asInt40(Primitive self) internal pure returns (int40) {
+        unchecked { return int40(int256(Primitive.unwrap(self))); }
+    }
+
     function asInt32(Primitive self) internal pure returns (int32) {
         unchecked { return int32(int256(Primitive.unwrap(self))); }
     }
@@ -260,5 +272,133 @@ library From {
 
     function asInt8(Primitive self) internal pure returns (int8) {
         unchecked { return int8(int256(Primitive.unwrap(self))); }
+    }
+
+    function asBytes32(Primitive self) internal pure returns (bytes32) {
+        unchecked { return bytes32(Primitive.unwrap(self)); }
+    }
+
+    function asBytes31(Primitive self) internal pure returns (bytes31) {
+        unchecked { return bytes31(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes30(Primitive self) internal pure returns (bytes30) {
+        unchecked { return bytes30(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes29(Primitive self) internal pure returns (bytes29) {
+        unchecked { return bytes29(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes28(Primitive self) internal pure returns (bytes28) {
+        unchecked { return bytes28(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes27(Primitive self) internal pure returns (bytes27) {
+        unchecked { return bytes27(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes26(Primitive self) internal pure returns (bytes26) {
+        unchecked { return bytes26(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes25(Primitive self) internal pure returns (bytes25) {
+        unchecked { return bytes25(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes24(Primitive self) internal pure returns (bytes24) {
+        unchecked { return bytes24(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes23(Primitive self) internal pure returns (bytes23) {
+        unchecked { return bytes23(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes22(Primitive self) internal pure returns (bytes22) {
+        unchecked { return bytes22(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes21(Primitive self) internal pure returns (bytes21) {
+        unchecked { return bytes21(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes20(Primitive self) internal pure returns (bytes20) {
+        unchecked { return bytes20(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes19(Primitive self) internal pure returns (bytes19) {
+        unchecked { return bytes19(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes18(Primitive self) internal pure returns (bytes18) {
+        unchecked { return bytes18(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes17(Primitive self) internal pure returns (bytes17) {
+        unchecked { return bytes17(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes16(Primitive self) internal pure returns (bytes16) {
+        unchecked { return bytes16(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes15(Primitive self) internal pure returns (bytes15) {
+        unchecked { return bytes15(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes14(Primitive self) internal pure returns (bytes14) {
+        unchecked { return bytes14(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes13(Primitive self) internal pure returns (bytes13) {
+        unchecked { return bytes13(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes12(Primitive self) internal pure returns (bytes12) {
+        unchecked { return bytes12(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes11(Primitive self) internal pure returns (bytes11) {
+        unchecked { return bytes11(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes10(Primitive self) internal pure returns (bytes10) {
+        unchecked { return bytes10(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes9(Primitive self) internal pure returns (bytes9) {
+        unchecked { return bytes9(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes8(Primitive self) internal pure returns (bytes8) {
+        unchecked { return bytes8(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes7(Primitive self) internal pure returns (bytes7) {
+        unchecked { return bytes7(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes6(Primitive self) internal pure returns (bytes6) {
+        unchecked { return bytes6(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes5(Primitive self) internal pure returns (bytes5) {
+        unchecked { return bytes5(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes4(Primitive self) internal pure returns (bytes4) {
+        unchecked { return bytes4(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes3(Primitive self) internal pure returns (bytes3) {
+        unchecked { return bytes3(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes2(Primitive self) internal pure returns (bytes2) {
+        unchecked { return bytes2(bytes32(Primitive.unwrap(self))); }
+    }
+
+    function asBytes1(Primitive self) internal pure returns (bytes1) {
+        unchecked { return bytes1(bytes32(Primitive.unwrap(self))); }
     }
 }

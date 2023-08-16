@@ -26,7 +26,13 @@ import {
     modChecked,
     signedMod,
     signedModChecked,
+    addMod,
+    addModChecked,
+    mulMod,
+    mulModChecked,
+    exp,
     isZero,
+    nonZero,
     extendSign
 } from "src/primitive/Math.sol";
 import {and, or, xor, not, shr, shl, retainBits, constrainBits} from "src/primitive/Bitwise.sol";
@@ -65,7 +71,13 @@ using {
     modChecked,
     signedMod,
     signedModChecked,
+    addMod,
+    addModChecked,
+    mulMod,
+    mulModChecked,
+    exp,
     isZero,
+    nonZero,
     extendSign,
     and as &,
     and,

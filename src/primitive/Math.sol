@@ -69,13 +69,13 @@ function mul(Primitive lhs, Primitive rhs) pure returns (Primitive) {
 function mulChecked(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
     unchecked {
         res = lhs.mul(rhs);
-        if (res.div(rhs).neq(lhs).asBool()) revert Error.Overflow();
+        if (res.div(rhs).neq(lhs).and(rhs.nonZero()).asBool()) revert Error.Overflow();
     }
 }
 
-function div(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    unchecked {
-        return (lhs.asUint256() / rhs.asUint256()).asPrimitive();
+function div(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    assembly {
+        res := div(lhs, rhs)
     }
 }
 
@@ -86,9 +86,9 @@ function divChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     }
 }
 
-function signedDiv(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    unchecked {
-        return (lhs.asInt256() / rhs.asInt256()).asPrimitive();
+function signedDiv(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    assembly {
+        res := sdiv(lhs, rhs)
     }
 }
 
@@ -99,9 +99,9 @@ function signedDivChecked(Primitive lhs, Primitive rhs) pure returns (Primitive)
     }
 }
 
-function mod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    unchecked {
-        return (lhs.asUint256() % rhs.asUint256()).asPrimitive();
+function mod(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    assembly {
+        res := mod(lhs, rhs)
     }
 }
 
@@ -112,9 +112,9 @@ function modChecked(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     }
 }
 
-function signedMod(Primitive lhs, Primitive rhs) pure returns (Primitive) {
-    unchecked {
-        return (lhs.asInt256() % rhs.asInt256()).asPrimitive();
+function signedMod(Primitive lhs, Primitive rhs) pure returns (Primitive res) {
+    assembly {
+        res := smod(lhs, rhs)
     }
 }
 
@@ -125,8 +125,40 @@ function signedModChecked(Primitive lhs, Primitive rhs) pure returns (Primitive)
     }
 }
 
+function addMod(Primitive lhs, Primitive rhs, Primitive modulus) pure returns (Primitive res) {
+    assembly {
+        res := addmod(lhs, rhs, modulus)
+    }
+}
+
+function addModChecked(Primitive lhs, Primitive rhs, Primitive modulus) pure returns (Primitive) {
+    if (modulus.isZero().asBool()) revert Error.DivisionByZero();
+    return addMod(lhs, rhs, modulus);
+}
+
+function mulMod(Primitive lhs, Primitive rhs, Primitive modulus) pure returns (Primitive res) {
+    assembly {
+        res := mulmod(lhs, rhs, modulus)
+    }
+}
+
+function mulModChecked(Primitive lhs, Primitive rhs, Primitive modulus) pure returns (Primitive) {
+    if (modulus.isZero().asBool()) revert Error.DivisionByZero();
+    return mulMod(lhs, rhs, modulus);
+}
+
+function exp(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    unchecked {
+        return (lhs.asUint256() ** rhs.asUint256()).asPrimitive();
+    }
+}
+
 function isZero(Primitive self) pure returns (Primitive) {
     return (self.asUint256() == 0).asPrimitive();
+}
+
+function nonZero(Primitive self) pure returns (Primitive) {
+    return (self.asUint256() != 0).asPrimitive();
 }
 
 function extendSign(Primitive self, Primitive bits) pure returns (Primitive result) {
