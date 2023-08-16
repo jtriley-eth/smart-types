@@ -53,7 +53,8 @@ function isSome(Option self) pure returns (Primitive) {
 function isNone(Option self) pure returns (Primitive) {
     return self.asPrimitive()
         .shr(Constants.ENUM_OFFSET)
-        .and(Constants.ENUM_MASK);
+        .and(Constants.ENUM_MASK)
+        .isZero();
 }
 
 function expect(Option self, string memory message) pure returns (SmartPointer) {
