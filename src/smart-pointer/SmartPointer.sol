@@ -18,8 +18,9 @@ using {
     length,
     realloc,
     write,
+    writeAt,
     read,
-    readFrom,
+    readAt,
     asPrimitive
 } for SmartPointer global;
 using LibSmartPointer for SmartPointer global;
@@ -27,14 +28,19 @@ using LibSmartPointer for Primitive;
 
 library LibSmartPointer {
     function asSmartPointer(Primitive self) internal pure returns (SmartPointer) {
-        return SmartPointer.wrap(self.asUint64());
+        return SmartPointer.wrap(self.asUint256());
     }
 
     function newSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
-        return ptr.shl(Constants.PTR_OFFSET).or(len).asSmartPointer();
+        return ptr.and(Constants.PTR_MASK)
+            .shl(Constants.PTR_OFFSET)
+            .or(len.and(Constants.LEN_MASK))
+            .asSmartPointer();
     }
 
     function malloc(Primitive size) internal pure returns (SmartPointer) {
+        size = size.and(Constants.LEN_MASK);
+
         Primitive freeMemoryPointer;
         assembly ("memory-safe") {
             freeMemoryPointer := mload(0x40)
@@ -66,6 +72,14 @@ function write(SmartPointer self, Primitive value) pure returns (SmartPointer) {
     return self;
 }
 
+function writeAt(SmartPointer self, Primitive offset, Primitive value) pure returns (SmartPointer) {
+    Primitive ptr = self.pointer().add(offset);
+    assembly {
+        mstore(ptr, value)
+    }
+    return self;
+}
+
 function read(SmartPointer self) pure returns (Primitive value) {
     Primitive ptr = self.pointer();
     assembly {
@@ -73,7 +87,7 @@ function read(SmartPointer self) pure returns (Primitive value) {
     }
 }
 
-function readFrom(SmartPointer self, Primitive offset) pure returns (Primitive value) {
+function readAt(SmartPointer self, Primitive offset) pure returns (Primitive value) {
     Primitive ptr = self.pointer().add(offset);
     assembly {
         value := mload(ptr)
