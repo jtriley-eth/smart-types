@@ -298,6 +298,17 @@ contract PrimitiveTest is Test, PrimitiveAssertions {
         }
     }
 
+    function testFuzzGetByte(Primitive value, Primitive index) public {
+        if (index.gt(Primitive.wrap(31)).asBool()) {
+            assertEq(value.getByte(index), PrimitiveConstants.ZERO);
+        }
+        index = bound(index.asUint256(), 0, 31).asPrimitive();
+        assertEq(
+            value.getByte(index).asUint256(),
+            (value.asUint256() >> (31 - index.asUint256()) * 8) & 0xff
+        );
+    }
+
     function testFuzzTruthy(Primitive value) public {
         assertEq(value.truthy().asBool(), value.asUint256() != 0);
     }

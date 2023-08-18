@@ -35,7 +35,7 @@ import {
     nonZero,
     extendSign
 } from "src/primitive/Math.sol";
-import {and, or, xor, not, shr, shl, retainBits, constrainBits} from "src/primitive/Bitwise.sol";
+import {and, or, xor, not, shr, shl, retainBits, constrainBits, getByte} from "src/primitive/Bitwise.sol";
 import {truthy, falsy, logicalNot} from "src/primitive/Logical.sol";
 
 type Primitive is uint256;
@@ -93,6 +93,7 @@ using {
     shl,
     retainBits,
     constrainBits,
+    getByte,
     truthy,
     falsy,
     logicalNot

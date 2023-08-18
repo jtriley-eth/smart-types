@@ -41,3 +41,9 @@ function constrainBits(Primitive self, Primitive bits) pure returns (Primitive) 
     if (self.gt(mask).asBool()) revert Error.Overflow();
     return self;
 }
+
+function getByte(Primitive self, Primitive index) pure returns (Primitive b) {
+    assembly {
+        b := byte(index, self)
+    }
+}
