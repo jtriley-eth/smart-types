@@ -8,7 +8,7 @@ import {Vec} from "src/vector/Vec.sol";
 
 library As {
     function asPrimitive(bool self) internal pure returns (Primitive p) {
-        assembly ("memory-safe") {
+        assembly {
             p := self
         }
     }
