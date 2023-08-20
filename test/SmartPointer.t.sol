@@ -15,9 +15,9 @@ contract SmartPointerTest is Test, PrimitiveAssertions {
         assertEq(value.asSmartPointer().asPrimitive(), value);
     }
 
-    function testFuzzNewSmartPointer(Primitive ptr, Primitive len) public {
+    function testFuzzToSmartPointer(Primitive ptr, Primitive len) public {
         assertEq(
-            ptr.newSmartPointer(len).asPrimitive(),
+            ptr.toSmartPointer(len).asPrimitive(),
             (((ptr.asUint256() & type(uint32).max) << 32) | (len.asUint256() & type(uint32).max)).asPrimitive()
         );
     }

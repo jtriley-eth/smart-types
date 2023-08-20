@@ -31,7 +31,7 @@ library LibSmartPointer {
         return SmartPointer.wrap(self.asUint256());
     }
 
-    function newSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
+    function toSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
         return ptr.and(Constants.PTR_MASK)
             .shl(Constants.PTR_OFFSET)
             .or(len.and(Constants.LEN_MASK))
@@ -46,7 +46,7 @@ library LibSmartPointer {
             freeMemoryPointer := mload(0x40)
             mstore(0x40, add(freeMemoryPointer, size))
         }
-        return newSmartPointer(freeMemoryPointer, size);
+        return toSmartPointer(freeMemoryPointer, size);
     }
 }
 
@@ -109,7 +109,7 @@ function __realloc(SmartPointer self, Primitive newLen) view returns (SmartPoint
         success := staticcall(gas(), 0x04, ptr, len, newPtr, newLen)
     }
     if (success.falsy().asBool()) revert Error.MemoryCopy();
-    return LibSmartPointer.newSmartPointer(newPtr, newLen);
+    return LibSmartPointer.toSmartPointer(newPtr, newLen);
 }
 
 function __pure(
