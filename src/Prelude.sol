@@ -21,3 +21,11 @@ import {
     Error as SmartPointerError,
     LibSmartPointer
 } from "src/smart-pointer/SmartPointer.sol";
+
+import {
+    Fn,
+    LibFn,
+    Arg,
+    Constants as FnConstants,
+    Error as FnError
+} from "src/fn/Fn.sol";
