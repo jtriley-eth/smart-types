@@ -6,7 +6,7 @@ import {Primitive} from "src/primitive/Primitive.sol";
 import {As as PrimitiveAs} from "src/primitive/As.sol";
 import {Option, LibOption} from "src/option/Option.sol";
 import {LibSmartPointer} from "src/smart-pointer/SmartPointer.sol";
-import {Constants as Const} from "src/fn/Constants.sol";
+import {Constants, Constants as Const} from "src/fn/Constants.sol";
 import {Error} from "src/fn/Error.sol";
 import {From} from "src/fn/From.sol";
 
@@ -29,6 +29,7 @@ using {
     isFullyApplied,
     isCallable,
     call,
+    clone,
     asPrimitive
  } for Fn global;
 using LibFn for Fn global;
@@ -220,7 +221,8 @@ library LibApply {
             mstore(argPtr, arg)
         }
         return self.asPrimitive()
-            .and(Const.APPLIED_MASK.shl(Const.APPLIED_OFFSET).not())
+            .and(Const.KIND_AND_APPLIED_MASK.shl(Const.APPLIED_OFFSET).not())
+            .or(self.kindBitmap().shl(Const.KIND_OFFSET + Const.ONE))
             .or(appliedArgs.add(Const.ONE).shl(Const.APPLIED_OFFSET))
             .asFn();
     }
@@ -235,8 +237,8 @@ library LibApply {
             mstore(argPtr, arg)
         }
         return self.asPrimitive()
-            .and(Const.KIND_AND_APPLIED_MASK.shl(Const.KIND_OFFSET).not())
-            .or(self.kindBitmap() | (Const.ONE.shl(Const.KIND_OFFSET + appliedArgs)))
+            .and(Const.KIND_AND_APPLIED_MASK.shl(Const.APPLIED_OFFSET).not())
+            .or(self.kindBitmap().shl(Const.ONE).or(Const.ONE).shl(Const.KIND_OFFSET))
             .or(appliedArgs.add(Const.ONE).shl(Const.APPLIED_OFFSET))
             .asFn();
     }
@@ -280,9 +282,10 @@ function argumentAtUnchecked(Fn self, Primitive index) pure returns (Primitive a
 }
 
 function isConcreteAt(Fn self, Primitive index) pure returns (Primitive) {
-    if (index.gt(self.expectedArguments()).asBool()) return Const.ZERO;
+    Primitive maxIndex = self.expectedArguments() - Const.ONE;
+    if (index.gt(maxIndex).asBool()) return Const.ZERO;
     return self.asPrimitive()
-        .shr(Const.KIND_OFFSET + index)
+        .shr(Const.KIND_OFFSET + maxIndex - index)
         .and(Const.ONE);
 }
 
@@ -303,22 +306,45 @@ function call(Fn self) pure returns (Primitive) {
     Primitive expectedArgs = self.expectedArguments();
 
     if (self.isCallable().falsy().asBool()) {
-        Primitive argPtr = self.argumentsPointer();
-        for (Primitive i; i.lt(expectedArgs).asBool(); i = i + Const.ONE) {
+        Primitive argsPtr = self.argumentsPointer();
+        for (Primitive i; i.lt(expectedArgs).asBool(); i = i.add(Const.ONE)) {
             if (self.isConcreteAt(i).falsy().asBool()) {
+                Primitive offset = argsPtr + (i * Const.ARG_SIZE);
                 Fn fnToResolve;
                 assembly {
-                    fnToResolve := mload(add(argPtr, shl(5, i)))
+                    fnToResolve := mload(offset)
                 }
-                fnToResolve.call();
+                Primitive result = fnToResolve.call();
+                assembly {
+                    mstore(offset, result)
+                }
             }
         }
     }
 
-    Fn fn = self.destination().asFn();
-
     // dont read this
-    return __dispatch(fn, expectedArgs);
+    return __dispatch(self, expectedArgs);
+}
+
+function clone(Fn self) pure returns (Fn) {
+    Primitive expectedArgs = self.expectedArguments();
+    Primitive selfArgsPtr = self.argumentsPointer();
+    Primitive newArgsPtr;
+    assembly {
+        // allocate new memory
+        newArgsPtr := mload(0x40)
+        mstore(0x40, add(newArgsPtr, shl(5, expectedArgs)))
+
+        // deep clone all Fn arguments
+        for { let i } lt(i, expectedArgs) { i := add(i, 1) } {
+            let offset := shl(5, i)
+            mstore(add(newArgsPtr, offset), mload(add(selfArgsPtr, offset)))
+        }
+    }
+    return self.asPrimitive()
+        .and(Const.ARG_PTR_MASK.not())
+        .or(newArgsPtr)
+        .asFn();
 }
 
 function asPrimitive(Fn self) pure returns (Primitive) {
@@ -326,7 +352,7 @@ function asPrimitive(Fn self) pure returns (Primitive) {
 }
 
 // i'm warning you
-// (these comments are brought to you by copilot, i couldn't bring myself to rm them).
+// (these comments were written by copilot, i couldn't bring myself to rm them).
 function __dispatch(Fn self, Primitive expectedArgs) pure returns (Primitive) {
     // i'm serious
     if (expectedArgs.eq(Const.ZERO).asBool()) {

@@ -14,6 +14,7 @@ library Constants {
     Primitive internal constant SEVEN = Primitive.wrap(7);
     Primitive internal constant EIGHT = Primitive.wrap(8);
     Primitive internal constant ARG_SIZE = Primitive.wrap(32);
+    Primitive internal constant KIND_MSB = Primitive.wrap(56);
 
     Primitive internal constant DEST_OFFSET = Primitive.wrap(56);
     Primitive internal constant KIND_OFFSET = Primitive.wrap(48);
