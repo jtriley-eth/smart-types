@@ -29,3 +29,8 @@ import {
     Constants as FnConstants,
     Error as FnError
 } from "src/fn/Fn.sol";
+
+import {
+    ERC20,
+    LibERC20
+} from "src/erc/ERC20.sol";
