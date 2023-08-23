@@ -10,7 +10,9 @@ out/
 # Dotenv file
 .env
 
+# mdbook output
+docs/book/
+
 # Some place, some time, sooner or later, someone will commit to this repo from Mac OS, and when that
 # day comes, we will be ready.
 .DS_Store
-
