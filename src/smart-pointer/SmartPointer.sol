@@ -21,10 +21,12 @@ using {
     writeAt,
     read,
     readAt,
+    hash,
     asPrimitive
 } for SmartPointer global;
 using LibSmartPointer for SmartPointer global;
 using LibSmartPointer for Primitive;
+using PrimitiveAs for uint256;
 
 library LibSmartPointer {
     function asSmartPointer(Primitive self) internal pure returns (SmartPointer) {
@@ -36,6 +38,14 @@ library LibSmartPointer {
             .shl(Constants.PTR_OFFSET)
             .or(len.and(Constants.LEN_MASK))
             .asSmartPointer();
+    }
+
+    function toSmartPointer(bytes memory data) internal pure returns (SmartPointer) {
+        Primitive ptr;
+        assembly {
+            ptr := add(data, 0x20)
+        }
+        return ptr.toSmartPointer(data.length.asPrimitive());
     }
 
     function malloc(Primitive size) internal pure returns (SmartPointer) {
@@ -91,6 +101,14 @@ function readAt(SmartPointer self, Primitive offset) pure returns (Primitive val
     Primitive ptr = self.pointer().add(offset);
     assembly {
         value := mload(ptr)
+    }
+}
+
+function hash(SmartPointer self) pure returns (Primitive digest) {
+    Primitive ptr = self.pointer();
+    Primitive len = self.length();
+    assembly {
+        digest := keccak256(ptr, len)
     }
 }
 

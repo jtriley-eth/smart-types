@@ -10,6 +10,7 @@ using LibSmartPointer for Primitive;
 
 contract SmartPointerTest is Test, PrimitiveAssertions {
     using PrimitiveAs for *;
+    using LibSmartPointer for bytes;
 
     function testFuzzAsSmartPointer(Primitive value) public {
         assertEq(value.asSmartPointer().asPrimitive(), value);
@@ -20,6 +21,14 @@ contract SmartPointerTest is Test, PrimitiveAssertions {
             ptr.toSmartPointer(len).asPrimitive(),
             (((ptr.asUint256() & type(uint32).max) << 32) | (len.asUint256() & type(uint32).max)).asPrimitive()
         );
+    }
+
+    function testFuzzToSmartPointerFromBytes(bytes memory data) public {
+        SmartPointer smartPointer = data.toSmartPointer();
+        Primitive ptr;
+        assembly { ptr := add(data, 0x20) }
+        assertEq(smartPointer.pointer(), ptr);
+        assertEq(smartPointer.length(), data.length.asPrimitive());
     }
 
     function testFuzzMalloc(uint32 size) public {
@@ -96,5 +105,12 @@ contract SmartPointerTest is Test, PrimitiveAssertions {
         SmartPointer smartPointer = slots.mul(Primitive.wrap(32)).malloc().writeAt(slot, value);
 
         assertEq(smartPointer.readAt(slot), value);
+    }
+
+    function testFuzzHash(bytes memory data) public {
+        assertEq(
+            keccak256(data).asPrimitive(),
+            data.toSmartPointer().hash()
+        );
     }
 }
