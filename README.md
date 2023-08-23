@@ -16,14 +16,16 @@ Documentation will follow upon the official `0.1.0` release.
 - `Option` is an optional `SmartPointer`, a proper sum-type
 - `Option` may resolve to `None` or `Some(SmartPointer)`
 - `Option` API follows roughly Rust's
+- `Fn` takes N arguments of type `Primitive` or `Fn`
+- `Fn` arguments of type `Fn` are resolved recursively and lazily
 
 ## TODO
 
-- `Fn` type for runtime partial function application (in progress)
 - `Vec` type for memory vectors (in progress)
-- `ERCN` type around `address` for optimized ERC-related interactions without interfaces (todo)
+- `ERCN` type around `address` for optimized ERC-related interactions without interfaces (in progress)
 - `Graph` recursive type for on-chain graph data structures (todo)
 
 ## Contributing
 
 Contribution guide will follow upon the official `0.1.0` release.
+
