@@ -98,7 +98,7 @@ contract SmartPointerTest is Test, PrimitiveAssertions {
     }
 
     function testFuzzRead(Primitive value) public {
-        SmartPointer smartPointer = Primitive.wrap(32).malloc().write(value);
+        SmartPointer smartPointer = LibSmartPointer.writePrimitive(value);
 
         assertEq(smartPointer.read(), value);
     }
