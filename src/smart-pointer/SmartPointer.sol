@@ -48,6 +48,10 @@ library LibSmartPointer {
         return ptr.toSmartPointer(data.length.asPrimitive());
     }
 
+    function writePrimitive(Primitive value) internal pure returns (SmartPointer) {
+        return malloc(Primitive.wrap(32)).write(value);
+    }
+
     function malloc(Primitive size) internal pure returns (SmartPointer) {
         size = size.and(Constants.LEN_MASK);
 

@@ -31,6 +31,10 @@ contract SmartPointerTest is Test, PrimitiveAssertions {
         assertEq(smartPointer.length(), data.length.asPrimitive());
     }
 
+    function testFuzzWritePrimitive(Primitive value) public {
+        assertEq(value.writePrimitive().read(), value);
+    }
+
     function testFuzzMalloc(uint32 size) public {
         SmartPointer smartPointer = size.asPrimitive().malloc();
         Primitive freeMemPtr;
