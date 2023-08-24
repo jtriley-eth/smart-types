@@ -18,7 +18,7 @@ same time, interactions between values of differing types becomes increasingly c
 compiler attempting to ensure developers understand explicitly what happens to their data during
 type casting. These problems are no fault of the compiler engineering team. It is at the fault of a
 broader community failing to reach consensus on the extent to which the compiler should enforce
-program correctness. Smart Types cannot fix everything, but it can use two glorious features of
+program correctness. Smart Types cannot fix everything, but it can use two beautiful features of
 modern Solidity to explore further, the type alias and the type checker's blindspot, assembly.
 
 At the core of the library, the `Primitive` type exhibits no implicit behavior. Addition is not
