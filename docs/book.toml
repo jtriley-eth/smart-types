@@ -1,0 +1,10 @@
+[book]
+authors = ["Joshua Trujillo"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Smart Types"
+description = "A document about the Smart Types library"
+
+[output.html]
+additional-js = ["src/static/solidity.min.js"]
