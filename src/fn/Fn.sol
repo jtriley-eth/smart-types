@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Arg} from "src/fn/Arg.sol";
+// import {Arg} from "src/fn/Arg.sol";
 import {Primitive} from "src/primitive/Primitive.sol";
 import {As as PrimitiveAs} from "src/primitive/As.sol";
 import {Option, LibOption} from "src/option/Option.sol";

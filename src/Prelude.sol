@@ -25,7 +25,6 @@ import {
 import {
     Fn,
     LibFn,
-    Arg,
     Constants as FnConstants,
     Error as FnError
 } from "src/fn/Fn.sol";
