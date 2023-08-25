@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import {Primitive} from "src/primitive/Primitive.sol";
 import {Fn} from "src/fn/Fn.sol";
 import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
-import {Vec} from "src/vector/Vec.sol";
 
 library As {
     function asPrimitive(bool self) internal pure returns (Primitive p) {
