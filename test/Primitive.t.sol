@@ -264,7 +264,7 @@ contract PrimitiveTest is Test, PrimitiveAssertions {
         assertEq(value.not().asUint256(), ~value.asUint256());
     }
 
-    function testFuzzShiftLeft(Primitive value, Primitive bits) public {
+    function testFuzzShl(Primitive value, Primitive bits) public {
         bits = bound(bits.asUint256(), 0, 255).asPrimitive();
         assertEq(
             value.shl(bits).asUint256(),
@@ -272,11 +272,27 @@ contract PrimitiveTest is Test, PrimitiveAssertions {
         );
     }
 
-    function testFuzzShiftRight(Primitive value, Primitive bits) public {
+    function testFuzzShr(Primitive value, Primitive bits) public {
         bits = bound(bits.asUint256(), 0, 255).asPrimitive();
         assertEq(
             value.shr(bits).asUint256(),
             value.asUint256() >> bits.asUint256()
+        );
+    }
+
+    function testFuzzRotr(Primitive value, Primitive bits) public {
+        bits = bound(bits.asUint256(), 0, 255).asPrimitive();
+        assertEq(
+            value.rotr(bits).asUint256(),
+            ((value.asUint256() >> bits.asUint256()) | (value.asUint256() << (256 - bits.asUint256())))
+        );
+    }
+
+    function testFuzzRotl(Primitive value, Primitive bits) public {
+        bits = bound(bits.asUint256(), 0, 255).asPrimitive();
+        assertEq(
+            value.rotl(bits).asUint256(),
+            ((value.asUint256() << bits.asUint256()) | (value.asUint256() >> (256 - bits.asUint256())))
         );
     }
 

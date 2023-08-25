@@ -16,6 +16,18 @@ function shl(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     return (lhs.asUint256() << rhs.asUint256()).asPrimitive();
 }
 
+function rotr(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (
+        (lhs.asUint256() >> rhs.asUint256()) | (lhs.asUint256() << (256 - rhs.asUint256()))
+    ).asPrimitive();
+}
+
+function rotl(Primitive lhs, Primitive rhs) pure returns (Primitive) {
+    return (
+        (lhs.asUint256() << rhs.asUint256()) | (lhs.asUint256() >> (256 - rhs.asUint256()))
+    ).asPrimitive();
+}
+
 function and(Primitive lhs, Primitive rhs) pure returns (Primitive) {
     return (lhs.asUint256() & rhs.asUint256()).asPrimitive();
 }
