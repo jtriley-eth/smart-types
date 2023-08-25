@@ -1,9 +1,10 @@
 # Philosophy
 
 No functional type system would be complete without its philosophical document.
+This is not a prerequisite document, though it explains our reasoning and methodology.
 
 The existence and implementation of Smart Types is intimately related to the Solidity compiler's
-strengths, weakneses, and blind spots. Over time, application exploitation has pushed Solidity into
+strengths, weaknesses, and blind spots. Over time, application exploitation has pushed Solidity into
 an identity crisis. Being a smart contract domain specific language, it is pushed towards program
 correctness by the deeply financial nature of smart contracts. Exploits carry deeper consequences on
 a virtual machine whose code is immutable and whose transaction costs incentivizes applications
@@ -19,7 +20,7 @@ compiler attempting to ensure developers understand explicitly what happens to t
 type casting. These problems are no fault of the compiler engineering team. It is at the fault of a
 broader community failing to reach consensus on the extent to which the compiler should enforce
 program correctness. Smart Types cannot fix everything, but it can use two beautiful features of
-modern Solidity to explore further, the type alias and the type checker's blindspot, assembly.
+modern Solidity to explore further, the type alias and the type checker's blind spot, assembly.
 
 At the core of the library, the `Primitive` type exhibits no implicit behavior. Addition is not
 checked for overflow by default, type casts are not checked for overflow. When it is converted to
@@ -44,4 +45,4 @@ sum type.
 Efficiency is important in resource constrained environments and efficiency will be improved when we
 can reasonably do so without disrupting the application programming interface. The objective of this
 library is not efficiency above all else, rather it is an exploration of type theory in an
-underconstrained compiler and of what is even possible in the Ethereum Virtual Machine.
+under-constrained compiler and of what is even possible in the Ethereum Virtual Machine.
