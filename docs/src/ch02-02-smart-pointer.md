@@ -49,6 +49,10 @@ The `SmartPointer` points to a slice of memory, however the structure of the dat
 the scope of the type. Types that build upon `SmartPointer`, however, may specify their own
 structure.
 
+| start       | stop                   |
+| ----------- | ---------------------- |
+| `pointer()` | `pointer() + length()` |
+
 ## API
 
 ### Free Functions
