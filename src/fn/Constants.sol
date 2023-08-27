@@ -14,13 +14,11 @@ library Constants {
     Primitive internal constant SEVEN = Primitive.wrap(7);
     Primitive internal constant EIGHT = Primitive.wrap(8);
     Primitive internal constant ARG_SIZE = Primitive.wrap(32);
-    Primitive internal constant KIND_MSB = Primitive.wrap(56);
 
     Primitive internal constant DEST_OFFSET = Primitive.wrap(56);
     Primitive internal constant KIND_OFFSET = Primitive.wrap(48);
     Primitive internal constant APPLIED_OFFSET = Primitive.wrap(40);
     Primitive internal constant EXPECTED_OFFSET = Primitive.wrap(32);
-    Primitive internal constant ARG_KIND_OFFSET = Primitive.wrap(72);
 
     Primitive internal constant DEST_MASK = Primitive.wrap(0xffff);
     Primitive internal constant KIND_MASK = Primitive.wrap(0xff);
@@ -29,5 +27,4 @@ library Constants {
     Primitive internal constant ARG_PTR_MASK = Primitive.wrap(0xffffffff);
     Primitive internal constant KIND_AND_APPLIED_MASK = Primitive.wrap(0xffff);
     Primitive internal constant ARG_KIND_MASK = Primitive.wrap(0x01);
-    Primitive internal constant ARG_INNER_MASK = Primitive.wrap(0xffffffffffffffffff);
 }
