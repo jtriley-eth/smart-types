@@ -89,7 +89,7 @@ contract PrimitiveTest is Test, PrimitiveAssertions {
         }
     }
 
-    function tesetFuzzMul(Primitive lhs, Primitive rhs) public {
+    function testFuzzMul(Primitive lhs, Primitive rhs) public {
         unchecked {
             assertEq(lhs.mul(rhs).asUint256(), lhs.asUint256() * rhs.asUint256());
         }
