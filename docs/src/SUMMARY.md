@@ -18,7 +18,7 @@
   - [Code Pointer](ch02-03-code-pointer.md)
   - [Memory Pointer](ch02-04-memory-pointer.md)
   - [Returndata Pointer](ch02-05-returndata-pointer.md)
-  - [Storage Pointer](ch02-06-returndata-pointer.md)
+  - [Storage Pointer](ch02-06-storage-pointer.md)
   - [Smart Pointer](ch02-07-smart-pointer.md)
   - [Option](ch02-08-option.md)
   - [ERCN](ch02-09-ercn.md)
