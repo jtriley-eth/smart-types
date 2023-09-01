@@ -16,6 +16,19 @@ import {
 } from "src/option/Option.sol";
 
 import {
+    CalldataPointer,
+    LibCalldataPointer,
+    CodePointer,
+    LibCodePointer,
+    MemoryPointer,
+    LibMemoryPointer,
+    ReturndataPointer,
+    LibReturndataPointer,
+    StoragePointer,
+    LibStoragePointer
+} from "src/ptr/Pointer.sol";
+
+import {
     SmartPointer,
     Constants as SmartPointerConstants,
     Error as SmartPointerError,
