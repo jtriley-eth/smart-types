@@ -26,7 +26,7 @@ a.unwrapOrElse(newSmartPointer);
 ### Stack
 
 The `Option` value on the stack occupies 72 bits. There is a 64 bit
-[`SmartPointer`](ch02-02-smart-pointer.md) packed with an eight bit `Member` enumeration.
+[`SmartPointer`](ch02-07-smart-pointer.md) packed with an eight bit `Member` enumeration.
 
 The `Member` enumeration is not exported externally, as it should never be accessed directly. It
 represents either `None` or `Some`, where `Some` is accompanied by a `SmartPointer` while `None` is
@@ -41,7 +41,7 @@ not.
 The `Option` type contains two variants, `None` and `Some`. The `None` variant contains no memory
 data, however the `Some` variant contains a `SmartPointer` over an unstructured slice of memory. For
 more information about memory in the context of the `SmartPointer`, refer to its
-[documentation](ch02-02-smart-pointer.md).
+[documentation](ch02-07-smart-pointer.md).
 
 ## API
 
