@@ -21,6 +21,7 @@ using {
     unwrap,
     unwrapOr,
     unwrapOrElse,
+    unwrapUnchecked,
     asPrimitive
 } for Option global;
 using LibOption for Option global;
@@ -84,6 +85,12 @@ function unwrapOrElse(
     return self.isSome().asBool()
         ? self.asPrimitive().and(Constants.BOX_MASK).asBox()
         : fn();
+}
+
+function unwrapUnchecked(Option self) pure returns (Box) {
+    return self.asPrimitive()
+        .and(Constants.BOX_MASK)
+        .asBox();
 }
 
 function asPrimitive(Option self) pure returns (Primitive) {

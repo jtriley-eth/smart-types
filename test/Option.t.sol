@@ -88,6 +88,17 @@ contract OptionTest is Test, PrimitiveAssertions {
         );
     }
 
+    function testFuzzUnwrapUnchecked(uint64 ptr) public {
+        assertEq(
+            LibOption.Some(ptr.asPrimitive().asBox()).unwrapUnchecked().asPrimitive(),
+            ptr.asPrimitive()
+        );
+        assertEq(
+            LibOption.None().unwrapUnchecked().asPrimitive(),
+            Primitive.wrap(0)
+        );
+    }
+
     function defaultValue() internal pure returns (Box) {
         return Box.wrap(1);
     }

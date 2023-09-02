@@ -107,6 +107,14 @@ function unwrapOrElse(
 ) pure returns (Box);
 ```
 
+#### unwrapUnchecked
+
+Returns the underlying `Box` without checking if the `Option` is `None`.
+
+```solidity
+function unwrapUnchecked(Option self) pure returns (Box);
+```
+
 #### asPrimitive
 
 Converts an `Option` to `Primitive`, performing no checks or mutations.
