@@ -48,7 +48,7 @@ library LibBox {
         return ptr.toBox(data.length.asPrimitive());
     }
 
-    function writePrimitive(Primitive value) internal pure returns (Box) {
+    function mstore(Primitive value) internal pure returns (Box) {
         return malloc(Primitive.wrap(32)).write(value);
     }
 

@@ -31,8 +31,8 @@ contract BoxTest is Test, PrimitiveAssertions {
         assertEq(box.length(), data.length.asPrimitive());
     }
 
-    function testFuzzWritePrimitive(Primitive value) public {
-        assertEq(value.writePrimitive().read(), value);
+    function testFuzzMstore(Primitive value) public {
+        assertEq(value.mstore().read(), value);
     }
 
     function testFuzzMalloc(uint32 size) public {
@@ -98,7 +98,7 @@ contract BoxTest is Test, PrimitiveAssertions {
     }
 
     function testFuzzRead(Primitive value) public {
-        Box box = LibBox.writePrimitive(value);
+        Box box = LibBox.mstore(value);
 
         assertEq(box.read(), value);
     }

@@ -10,7 +10,7 @@ provided from methods defined in `LibBox`. Additionally, it can be converted to 
 ```solidity
 Box a = LibBox.malloc(size);
 Box b = LibBox.toBox(pointer, length);
-Box c = LibBox.writePrimitive(value);
+Box c = LibBox.mstore(value);
 Box d = c.reallocate(Primitive.wrap(64));
 Box e = d.asPrimitive().asBox();
 ```
@@ -175,13 +175,13 @@ the bytes.
 function toBox(bytes memory data) pure returns (Box);
 ```
 
-#### writePrimitive
+#### mstore
 
 Allocates a new `Box` of [`length`](#length) 32 and immediately writes a `Primitive` value
 to it.
 
 ```solidity
-function writePrimitive(Primitive value) pure returns (Box);
+function mstore(Primitive value) pure returns (Box);
 ```
 
 #### malloc

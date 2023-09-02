@@ -30,7 +30,7 @@ contract HashFetcher {
 function getCodehash(address target) pure returns (Option) {
     if (target.code.length == 0) return LibOption.None();
     return LibOption.Some(
-        LibBox.writePrimitive(target.codehash.asPrimitive())
+        LibBox.mstore(target.codehash.asPrimitive())
     );
 }
 ```
@@ -64,7 +64,7 @@ using PrimitiveAs for bytes32;
 function getCodehash(address target) pure returns (Option) {
     Primitive hash = target.codehash.asPrimitive();
     if (hash.isZero().asBool()) return LibOption.None();
-    return LibOption.Some(LibBox.writePrimitive(hash));
+    return LibOption.Some(LibBox.mstore(hash));
 }
 
 // -- snip --
