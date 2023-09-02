@@ -54,6 +54,7 @@ Returns `1` if the `Option` is of the `Some` variant, otherwise `0`.
 ```solidity
 function isSome(Option self) pure returns (Primitive);
 ```
+
 #### isNone
 
 Returns `1` if the `Option` is of the `None` variant, otherwise `0`.
@@ -61,6 +62,7 @@ Returns `1` if the `Option` is of the `None` variant, otherwise `0`.
 ```solidity
 function isNone(Option self) pure returns (Primitive);
 ```
+
 #### expect
 
 Returns the underlying `Box` if the `Option` is of the `Some` variant.
@@ -70,6 +72,7 @@ Reverts with a custom string if the `Option` is of the `None` variant.
 ```solidity
 function expect(Option self, string memory message) pure returns (Box);
 ```
+
 #### unwrap
 
 Returns the underlying `Box` if the `Option` is of the `Some` variant.
@@ -79,6 +82,7 @@ Reverts with [`OptionError.IsNone`](#isnone-1) if the `Option` is of the `None` 
 ```solidity
 function unwrap(Option self) pure returns (Box);
 ```
+
 #### unwrapOr
 
 Returns the underlying `Box` if the `Option` is of the `Some` variant.
@@ -88,6 +92,7 @@ Returns a custom, default `Box` if the `Option` is of the `None` variant.
 ```solidity
 function unwrapOr(Option self, Box defaultValue) pure returns (Box);
 ```
+
 #### unwrapOrElse
 
 Returns the underlying `Box` if the `Option` is of the `Some` variant.
@@ -101,6 +106,7 @@ function unwrapOrElse(
     function() pure returns (Box) fn
 ) pure returns (Box);
 ```
+
 #### asPrimitive
 
 Converts an `Option` to `Primitive`, performing no checks or mutations.
