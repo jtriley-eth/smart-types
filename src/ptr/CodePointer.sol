@@ -11,7 +11,7 @@ import {MemoryPointer} from "src/ptr/MemoryPointer.sol";
 // | 224   | 16  |
 type CodePointer is uint256;
 
-using {read, copy, asPrimitive} for CodePointer global;
+using {read, readAt, copy, asPrimitive} for CodePointer global;
 
 library LibCodePointer {
     function asCodePointer(Primitive self) internal pure returns (CodePointer) {
@@ -22,6 +22,13 @@ library LibCodePointer {
 function read(CodePointer self) pure returns (Primitive result) {
     assembly {
         codecopy(0x00, self, 0x20)
+        result := mload(0x00)
+    }
+}
+
+function readAt(CodePointer self, Primitive offset) pure returns (Primitive result) {
+    assembly {
+        codecopy(0x00, add(self, offset), 0x20)
         result := mload(0x00)
     }
 }

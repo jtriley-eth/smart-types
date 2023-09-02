@@ -84,6 +84,18 @@ contract PointerTest is Test, PrimitiveAssertions {
         assertEq(ptr.asCodePointer().read(), expected);
     }
 
+    function testFuzzCodePointerReadAt(Primitive offset) public {
+        offset = bound(offset.asUint256(), 0, address(this).code.length - 32).asPrimitive();
+        Primitive expected;
+
+        assembly {
+            codecopy(0x00, offset, 0x20)
+            expected := mload(0x00)
+        }
+
+        assertEq(CodePointer.wrap(0).readAt(offset), expected);
+    }
+
     function testFuzzCodePointerCopy(Primitive ptr, Primitive length) public {
         ptr = bound(ptr.asUint256(), 0, address(this).code.length - 32).asPrimitive();
         length = bound(length.asUint256(), 0, address(this).code.length - ptr.asUint256()).asPrimitive();
