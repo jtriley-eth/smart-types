@@ -29,11 +29,11 @@ import {
 } from "src/ptr/Pointer.sol";
 
 import {
-    SmartPointer,
-    Constants as SmartPointerConstants,
-    Error as SmartPointerError,
-    LibSmartPointer
-} from "src/smart-pointer/SmartPointer.sol";
+    Box,
+    Constants as BoxConstants,
+    Error as BoxError,
+    LibBox
+} from "src/box/Box.sol";
 
 import {
     Fn,

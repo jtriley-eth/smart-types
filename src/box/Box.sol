@@ -3,15 +3,15 @@ pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
 import {As as PrimitiveAs} from "src/primitive/As.sol";
-import {Error} from "src/smart-pointer/Error.sol";
-import {Constants} from "src/smart-pointer/Constants.sol";
+import {Error} from "src/box/Error.sol";
+import {Constants} from "src/box/Constants.sol";
 
 // smart pointer metadata layout
 //
 // | empty | ptr | len |
 // | ----- | --- | --- |
 // | 192   | 32  | 32  |
-type SmartPointer is uint256;
+type Box is uint256;
 
 using {
     pointer,
@@ -23,36 +23,36 @@ using {
     readAt,
     hash,
     asPrimitive
-} for SmartPointer global;
-using LibSmartPointer for SmartPointer global;
-using LibSmartPointer for Primitive;
+} for Box global;
+using LibBox for Box global;
+using LibBox for Primitive;
 using PrimitiveAs for uint256;
 
-library LibSmartPointer {
-    function asSmartPointer(Primitive self) internal pure returns (SmartPointer) {
-        return SmartPointer.wrap(self.asUint256());
+library LibBox {
+    function asBox(Primitive self) internal pure returns (Box) {
+        return Box.wrap(self.asUint256());
     }
 
-    function toSmartPointer(Primitive ptr, Primitive len) internal pure returns (SmartPointer) {
+    function toBox(Primitive ptr, Primitive len) internal pure returns (Box) {
         return ptr.and(Constants.PTR_MASK)
             .shl(Constants.PTR_OFFSET)
             .or(len.and(Constants.LEN_MASK))
-            .asSmartPointer();
+            .asBox();
     }
 
-    function toSmartPointer(bytes memory data) internal pure returns (SmartPointer) {
+    function toBox(bytes memory data) internal pure returns (Box) {
         Primitive ptr;
         assembly {
             ptr := add(data, 0x20)
         }
-        return ptr.toSmartPointer(data.length.asPrimitive());
+        return ptr.toBox(data.length.asPrimitive());
     }
 
-    function writePrimitive(Primitive value) internal pure returns (SmartPointer) {
+    function writePrimitive(Primitive value) internal pure returns (Box) {
         return malloc(Primitive.wrap(32)).write(value);
     }
 
-    function malloc(Primitive size) internal pure returns (SmartPointer) {
+    function malloc(Primitive size) internal pure returns (Box) {
         size = size.and(Constants.LEN_MASK);
 
         Primitive freeMemoryPointer;
@@ -60,25 +60,25 @@ library LibSmartPointer {
             freeMemoryPointer := mload(0x40)
             mstore(0x40, add(freeMemoryPointer, size))
         }
-        return toSmartPointer(freeMemoryPointer, size);
+        return toBox(freeMemoryPointer, size);
     }
 }
 
-function pointer(SmartPointer self) pure returns (Primitive) {
+function pointer(Box self) pure returns (Primitive) {
     return self.asPrimitive()
         .shr(Constants.PTR_OFFSET)
         .and(Constants.PTR_MASK);
 }
 
-function length(SmartPointer self) pure returns (Primitive) {
+function length(Box self) pure returns (Primitive) {
     return self.asPrimitive().and(Constants.LEN_MASK);
 }
 
-function realloc(SmartPointer self, Primitive newLen) pure returns (SmartPointer) {
+function realloc(Box self, Primitive newLen) pure returns (Box) {
     return __pure(__realloc)(self, newLen);
 }
 
-function write(SmartPointer self, Primitive value) pure returns (SmartPointer) {
+function write(Box self, Primitive value) pure returns (Box) {
     Primitive ptr = self.pointer();
     assembly {
         mstore(ptr, value)
@@ -86,7 +86,7 @@ function write(SmartPointer self, Primitive value) pure returns (SmartPointer) {
     return self;
 }
 
-function writeAt(SmartPointer self, Primitive offset, Primitive value) pure returns (SmartPointer) {
+function writeAt(Box self, Primitive offset, Primitive value) pure returns (Box) {
     Primitive ptr = self.pointer().add(offset);
     assembly {
         mstore(ptr, value)
@@ -94,21 +94,21 @@ function writeAt(SmartPointer self, Primitive offset, Primitive value) pure retu
     return self;
 }
 
-function read(SmartPointer self) pure returns (Primitive value) {
+function read(Box self) pure returns (Primitive value) {
     Primitive ptr = self.pointer();
     assembly {
         value := mload(ptr)
     }
 }
 
-function readAt(SmartPointer self, Primitive offset) pure returns (Primitive value) {
+function readAt(Box self, Primitive offset) pure returns (Primitive value) {
     Primitive ptr = self.pointer().add(offset);
     assembly {
         value := mload(ptr)
     }
 }
 
-function hash(SmartPointer self) pure returns (Primitive digest) {
+function hash(Box self) pure returns (Primitive digest) {
     Primitive ptr = self.pointer();
     Primitive len = self.length();
     assembly {
@@ -116,11 +116,11 @@ function hash(SmartPointer self) pure returns (Primitive digest) {
     }
 }
 
-function asPrimitive(SmartPointer self) pure returns (Primitive) {
-    return Primitive.wrap(SmartPointer.unwrap(self));
+function asPrimitive(Box self) pure returns (Primitive) {
+    return Primitive.wrap(Box.unwrap(self));
 }
 
-function __realloc(SmartPointer self, Primitive newLen) view returns (SmartPointer) {
+function __realloc(Box self, Primitive newLen) view returns (Box) {
     Primitive ptr = self.pointer();
     Primitive len = self.length();
     Primitive newPtr;
@@ -131,13 +131,13 @@ function __realloc(SmartPointer self, Primitive newLen) view returns (SmartPoint
         success := staticcall(gas(), 0x04, ptr, len, newPtr, newLen)
     }
     if (success.falsy().asBool()) revert Error.MemoryCopy();
-    return LibSmartPointer.toSmartPointer(newPtr, newLen);
+    return LibBox.toBox(newPtr, newLen);
 }
 
 function __pure(
-    function (SmartPointer, Primitive) view returns (SmartPointer) impureFn
+    function (Box, Primitive) view returns (Box) impureFn
 ) pure returns (
-    function (SmartPointer, Primitive) pure returns (SmartPointer) pureFn
+    function (Box, Primitive) pure returns (Box) pureFn
 ) {
     assembly {
         pureFn := impureFn

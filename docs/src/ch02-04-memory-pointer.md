@@ -13,7 +13,7 @@ We define operations to read, write, and copy memory.
 ### Stack
 
 The `MemoryPointer` value on the stack occupies 32 bits. There is no additional metadata packed into
-the value. For a sized memory pointer, see [`SmartPointer`](ch02-07-smart-pointer.md).
+the value. For a sized memory pointer, see [`Box`](ch02-07-box.md).
 
 | empty    | MemoryPointer |
 | -------- | --------------- |

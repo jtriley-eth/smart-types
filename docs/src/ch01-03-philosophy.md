@@ -36,9 +36,9 @@ While the Ethereum Virtual Machine contains multiple data storage locations with
 transience and mutability, every Solidity type is first and foremost a 256 bit stack value.
 Solidity's `bytes memory` type is a stack value pointing to a slice of memory containing 32 bytes
 to indicate length then `N` bytes indicated by the length. With the same objective, we define a
-second core type, `SmartPointer` containing metadata relating to a slice of memory. It does not
+second core type, `Box` containing metadata relating to a slice of memory. It does not
 care what the data is, how it is structured, or how to reason about it. It strictly provides an
-interface to read from and write to the slice. Types may encapsulate a `SmartPointer` to create
+interface to read from and write to the slice. Types may encapsulate a `Box` to create
 custom interactions with the slice, be it a vector, product type, simple sum type, or a recursive
 sum type.
 

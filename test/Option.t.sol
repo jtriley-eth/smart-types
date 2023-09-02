@@ -5,12 +5,12 @@ import "lib/forge-std/src/Test.sol";
 import "test/base/PrimitiveAssertions.sol";
 import "test/mock/MockOption.sol";
 
-import {Primitive, PrimitiveAs, SmartPointer, LibSmartPointer, Option, OptionConstants, OptionError, LibOption} from "src/Prelude.sol";
+import {Primitive, PrimitiveAs, Box, LibBox, Option, OptionConstants, OptionError, LibOption} from "src/Prelude.sol";
 
 contract OptionTest is Test, PrimitiveAssertions {
-    using LibOption for SmartPointer;
+    using LibOption for Box;
     using LibOption for Primitive;
-    using LibSmartPointer for Primitive;
+    using LibBox for Primitive;
     using PrimitiveAs for *;
 
     MockOption mock;
@@ -25,7 +25,7 @@ contract OptionTest is Test, PrimitiveAssertions {
 
     function testFuzzSome(uint64 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asSmartPointer()).asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asBox()).asPrimitive(),
             ptr.asPrimitive().or(Primitive.wrap(1).shl(OptionConstants.ENUM_OFFSET))
         );
     }
@@ -35,7 +35,7 @@ contract OptionTest is Test, PrimitiveAssertions {
     }
 
     function testFuzzIsSome(uint64 ptr) public {
-        assertTrue(LibOption.Some(ptr.asPrimitive().asSmartPointer()).isSome().asBool());
+        assertTrue(LibOption.Some(ptr.asPrimitive().asBox()).isSome().asBool());
     }
 
     function testIsNone() public {
@@ -44,7 +44,7 @@ contract OptionTest is Test, PrimitiveAssertions {
 
     function testFuzzExpect(uint64 ptr, string calldata message) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asSmartPointer()).expect("").asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asBox()).expect("").asPrimitive(),
             ptr.asPrimitive()
         );
         vm.expectRevert(bytes(message));
@@ -53,7 +53,7 @@ contract OptionTest is Test, PrimitiveAssertions {
 
     function testFuzzUnwrap(uint64 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asSmartPointer()).unwrap().asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asBox()).unwrap().asPrimitive(),
             ptr.asPrimitive()
         );
         vm.expectRevert(OptionError.IsNone.selector);
@@ -62,14 +62,14 @@ contract OptionTest is Test, PrimitiveAssertions {
 
     function testFuzzUnwrapOr(uint64 ptr, uint64 defaultPtr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asSmartPointer())
-                .unwrapOr(defaultPtr.asPrimitive().asSmartPointer())
+            LibOption.Some(ptr.asPrimitive().asBox())
+                .unwrapOr(defaultPtr.asPrimitive().asBox())
                 .asPrimitive(),
             ptr.asPrimitive()
         );
         assertEq(
             LibOption.None()
-                .unwrapOr(defaultPtr.asPrimitive().asSmartPointer())
+                .unwrapOr(defaultPtr.asPrimitive().asBox())
                 .asPrimitive(),
             defaultPtr.asPrimitive()
         );
@@ -77,7 +77,7 @@ contract OptionTest is Test, PrimitiveAssertions {
 
     function testFuzzUnwrapOrElse(uint64 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asSmartPointer())
+            LibOption.Some(ptr.asPrimitive().asBox())
                 .unwrapOrElse(defaultValue)
                 .asPrimitive(),
             ptr.asPrimitive()
@@ -88,7 +88,7 @@ contract OptionTest is Test, PrimitiveAssertions {
         );
     }
 
-    function defaultValue() internal pure returns (SmartPointer) {
-        return SmartPointer.wrap(1);
+    function defaultValue() internal pure returns (Box) {
+        return Box.wrap(1);
     }
 }

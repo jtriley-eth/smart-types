@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
-import {SmartPointer} from "src/smart-pointer/SmartPointer.sol";
+import {Box} from "src/box/Box.sol";
 import {Error} from "src/primitive/Error.sol";
 
 library From {

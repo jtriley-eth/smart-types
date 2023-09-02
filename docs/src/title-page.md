@@ -13,9 +13,9 @@ principles. Instead of writing libraries that can target all of Solidity's signe
 integers, fixed point decimal numbers, fixed byte sizes, booleans, and addresses, we can write
 libraries that target the `Primitive` so long as every type may be converted freely too and from it.
 
-Additionally, memory interactions are reworked, built on the `SmartPointer`, a stack value
+Additionally, memory interactions are reworked, built on the `Box`, a stack value
 containing metadata about a slice of the Ethereum Virtual Machine's linear memory. We can generalize
-memory interactions and wrap the `SmartPointer` in more complex types, adding new functionality to
+memory interactions and wrap the `Box` in more complex types, adding new functionality to
 target individual use cases.
 
 This book serves as a philosophical document on the new type system, documentation for the existing

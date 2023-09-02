@@ -5,7 +5,7 @@ pragma solidity ^0.8.20;
 import {Primitive} from "src/primitive/Primitive.sol";
 import {As as PrimitiveAs} from "src/primitive/As.sol";
 import {Option, LibOption} from "src/option/Option.sol";
-import {LibSmartPointer} from "src/smart-pointer/SmartPointer.sol";
+import {LibBox} from "src/box/Box.sol";
 import {Constants, Constants as Const} from "src/fn/Constants.sol";
 import {Error} from "src/fn/Error.sol";
 import {From} from "src/fn/From.sol";
@@ -36,7 +36,7 @@ using LibFn for Fn global;
 using LibApply for Fn global;
 using From for Fn global;
 using LibFn for Primitive;
-using LibSmartPointer for Primitive;
+using LibBox for Primitive;
 using PrimitiveAs for bool;
 
 library LibFn {
@@ -266,7 +266,7 @@ function argumentsPointer(Fn self) pure returns (Primitive) {
 
 function argumentAt(Fn self, Primitive index) pure returns (Option) {
     if (self.isConcreteAt(index).asBool()) {
-        return LibOption.Some(LibSmartPointer.toSmartPointer(
+        return LibOption.Some(LibBox.toBox(
             (self.argumentsPointer() + (index * Const.ARG_SIZE)),
             Const.ARG_SIZE
         ));

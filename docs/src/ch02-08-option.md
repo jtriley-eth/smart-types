@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `Option` type is a sum type, with members `None` with no data or `Some` with a `SmartPointer` to
+The `Option` type is a sum type, with members `None` with no data or `Some` with a `Box` to
 the underlying data. It may be created using `LibOption` with the appropriate function.
 
 ```solidity
@@ -10,7 +10,7 @@ Option maybeSomething = LibOption.Some(smartPtr);
 Option definitelyNothing = LibOption.None();
 ```
 
-The underlying `SmartPointer` should only be accessed by a method that handles the members first.
+The underlying `Box` should only be accessed by a method that handles the members first.
 We can revert on `None` with or without a custom message, and we can provide either a default value
 or a function that constructs a default value.
 
@@ -18,7 +18,7 @@ or a function that constructs a default value.
 Option a;
 
 a.expect("error: no data");
-a.unwrapOrElse(newSmartPointer);
+a.unwrapOrElse(newBox);
 ```
 
 ## Layout
@@ -26,22 +26,22 @@ a.unwrapOrElse(newSmartPointer);
 ### Stack
 
 The `Option` value on the stack occupies 72 bits. There is a 64 bit
-[`SmartPointer`](ch02-07-smart-pointer.md) packed with an eight bit `Member` enumeration.
+[`Box`](ch02-07-box.md) packed with an eight bit `Member` enumeration.
 
 The `Member` enumeration is not exported externally, as it should never be accessed directly. It
-represents either `None` or `Some`, where `Some` is accompanied by a `SmartPointer` while `None` is
+represents either `None` or `Some`, where `Some` is accompanied by a `Box` while `None` is
 not.
 
-| empty    | Member | SmartPointer |
+| empty    | Member | Box |
 | -------- | ------ | ------------ |
 | 184 bits | 8 bits | 64 bits      |
 
 ### Memory
 
 The `Option` type contains two variants, `None` and `Some`. The `None` variant contains no memory
-data, however the `Some` variant contains a `SmartPointer` over an unstructured slice of memory. For
-more information about memory in the context of the `SmartPointer`, refer to its
-[documentation](ch02-07-smart-pointer.md).
+data, however the `Some` variant contains a `Box` over an unstructured slice of memory. For
+more information about memory in the context of the `Box`, refer to its
+[documentation](ch02-07-box.md).
 
 ## API
 
@@ -63,43 +63,43 @@ function isNone(Option self) pure returns (Primitive);
 ```
 #### expect
 
-Returns the underlying `SmartPointer` if the `Option` is of the `Some` variant.
+Returns the underlying `Box` if the `Option` is of the `Some` variant.
 
 Reverts with a custom string if the `Option` is of the `None` variant.
 
 ```solidity
-function expect(Option self, string memory message) pure returns (SmartPointer);
+function expect(Option self, string memory message) pure returns (Box);
 ```
 #### unwrap
 
-Returns the underlying `SmartPointer` if the `Option` is of the `Some` variant.
+Returns the underlying `Box` if the `Option` is of the `Some` variant.
 
 Reverts with [`OptionError.IsNone`](#isnone-1) if the `Option` is of the `None` variant.
 
 ```solidity
-function unwrap(Option self) pure returns (SmartPointer);
+function unwrap(Option self) pure returns (Box);
 ```
 #### unwrapOr
 
-Returns the underlying `SmartPointer` if the `Option` is of the `Some` variant.
+Returns the underlying `Box` if the `Option` is of the `Some` variant.
 
-Returns a custom, default `SmartPointer` if the `Option` is of the `None` variant.
+Returns a custom, default `Box` if the `Option` is of the `None` variant.
 
 ```solidity
-function unwrapOr(Option self, SmartPointer defaultValue) pure returns (SmartPointer);
+function unwrapOr(Option self, Box defaultValue) pure returns (Box);
 ```
 #### unwrapOrElse
 
-Returns the underlying `SmartPointer` if the `Option` is of the `Some` variant.
+Returns the underlying `Box` if the `Option` is of the `Some` variant.
 
-Returns the result of a custom function deriving a default `SmartPointer` if the `Option` is of the
+Returns the result of a custom function deriving a default `Box` if the `Option` is of the
 `None` variant.
 
 ```solidity
 function unwrapOrElse(
     Option self,
-    function() pure returns (SmartPointer) fn
-) pure returns (SmartPointer);
+    function() pure returns (Box) fn
+) pure returns (Box);
 ```
 #### asPrimitive
 
@@ -121,10 +121,10 @@ function None() pure returns (Option);
 
 #### Some
 
-Constructs an `Option` of the `Some` variant with an underlying `SmartPointer`.
+Constructs an `Option` of the `Some` variant with an underlying `Box`.
 
 ```solidity
-function Some(SmartPointer ptr) pure returns (Option);
+function Some(Box ptr) pure returns (Option);
 ```
 
 #### asOption
@@ -150,7 +150,7 @@ Primitive constant ENUM_MASK = Primitive.wrap(0x01);
 
 #### SMART_POINTER_MASK
 
-64 bit mask, retains all bits of `SmartPointer`.
+64 bit mask, retains all bits of `Box`.
 
 ```solidity
 Primitive constant SMART_POINTER_MASK = Primitive.wrap(0xffffffffffffffff);
