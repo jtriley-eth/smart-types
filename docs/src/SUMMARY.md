@@ -19,7 +19,7 @@
   - [Memory Pointer](ch02-04-memory-pointer.md)
   - [Returndata Pointer](ch02-05-returndata-pointer.md)
   - [Storage Pointer](ch02-06-storage-pointer.md)
-  - [Smart Pointer](ch02-07-box.md)
+  - [Box](ch02-07-box.md)
   - [Option](ch02-08-option.md)
   - [ERCN](ch02-09-ercn.md)
   - [Fn](ch02-10-fn.md)

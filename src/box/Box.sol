@@ -6,7 +6,7 @@ import {As as PrimitiveAs} from "src/primitive/As.sol";
 import {Error} from "src/box/Error.sol";
 import {Constants} from "src/box/Constants.sol";
 
-// smart pointer metadata layout
+// box metadata layout
 //
 // | empty | ptr | len |
 // | ----- | --- | --- |
