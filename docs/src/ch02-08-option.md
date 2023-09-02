@@ -148,12 +148,12 @@ function asOption(Primitive self) pure returns (Option);
 Primitive constant ENUM_MASK = Primitive.wrap(0x01);
 ```
 
-#### SMART_POINTER_MASK
+#### BOX_MASK
 
 64 bit mask, retains all bits of `Box`.
 
 ```solidity
-Primitive constant SMART_POINTER_MASK = Primitive.wrap(0xffffffffffffffff);
+Primitive constant BOX_MASK = Primitive.wrap(0xffffffffffffffff);
 ```
 
 #### ENUM_OFFSET
