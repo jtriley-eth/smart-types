@@ -28,15 +28,15 @@ library LibMemoryPointer {
         assembly { ptr := mload(0x40) }
     }
 
-    function malloc(Primitive size) internal pure returns (MemoryPointer ptr) {
+    function malloc(Primitive length) internal pure returns (MemoryPointer ptr) {
         assembly ("memory-safe") {
             ptr := mload(0x40)
-            mstore(0x40, add(ptr, size))
+            mstore(0x40, add(ptr, length))
         }
     }
 
-    function calloc(Primitive size) internal pure returns (MemoryPointer) {
-        return malloc(size).clear(size);
+    function calloc(Primitive length) internal pure returns (MemoryPointer) {
+        return malloc(length).clear(length);
     }
 
     function mstore(Primitive value) internal pure returns (MemoryPointer ptr) {
@@ -46,10 +46,6 @@ library LibMemoryPointer {
     function asMemoryPointer(Primitive self) internal pure returns (MemoryPointer) {
         return MemoryPointer.wrap(Primitive.unwrap(self));
     }
-}
-
-function asPrimitive(MemoryPointer self) pure returns (Primitive) {
-    return Primitive.wrap(MemoryPointer.unwrap(self));
 }
 
 function write(MemoryPointer self, Primitive value) pure returns (MemoryPointer) {
@@ -103,6 +99,10 @@ function clear(MemoryPointer self, Primitive length) pure returns (MemoryPointer
         calldatacopy(self, calldatasize(), length)
     }
     return self;
+}
+
+function asPrimitive(MemoryPointer self) pure returns (Primitive) {
+    return Primitive.wrap(MemoryPointer.unwrap(self));
 }
 
 function __clone(MemoryPointer self, Primitive length) view returns (MemoryPointer ptr) {
