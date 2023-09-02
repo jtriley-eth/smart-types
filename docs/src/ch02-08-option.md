@@ -6,7 +6,7 @@ The `Option` type is a sum type, with members `None` with no data or `Some` with
 the underlying data. It may be created using `LibOption` with the appropriate function.
 
 ```solidity
-Option maybeSomething = LibOption.Some(smartPtr);
+Option maybeSomething = LibOption.Some(box);
 Option definitelyNothing = LibOption.None();
 ```
 

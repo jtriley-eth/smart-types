@@ -9,7 +9,7 @@ This document provides a brief summary of each data type in the library.
 - [`ReturndataPointer`](ch02-05-returndata-pointer.md): Generic pointer to returndata
 - [`StoragePointer`](ch02-06-returndata-pointer.md): Generic pointer to persistent storage
 - [`Box`](ch02-07-box.md): Generic metadata of a slice of memory
-- [`Option`](ch02-08-option.md): Nullable sum type containing either nothing or a smart pointer
+- [`Option`](ch02-08-option.md): Nullable sum type containing either nothing or a box
 - [`ERCN`](ch02-09-ercn.md): Family of efficient, drop-in interface replacements
   - [`ERC20`](https://eips.ethereum.org/EIPS/eip-20): Token Standard
 - [`Fn`](ch02-10-fn.md): Generic, lazy evaluated, partially applicable function

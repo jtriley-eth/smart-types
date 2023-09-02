@@ -60,20 +60,20 @@ function isNone(Option self) pure returns (Primitive) {
 function expect(Option self, string memory message) pure returns (Box) {
     if (self.isNone().asBool()) revert(message);
     return self.asPrimitive()
-        .and(Constants.SMART_POINTER_MASK)
+        .and(Constants.BOX_MASK)
         .asBox();
 }
 
 function unwrap(Option self) pure returns (Box) {
     if (self.isNone().asBool()) revert Error.IsNone();
     return self.asPrimitive()
-        .and(Constants.SMART_POINTER_MASK)
+        .and(Constants.BOX_MASK)
         .asBox();
 }
 
 function unwrapOr(Option self, Box defaultValue) pure returns (Box) {
     return self.isSome().asBool()
-        ? self.asPrimitive().and(Constants.SMART_POINTER_MASK).asBox()
+        ? self.asPrimitive().and(Constants.BOX_MASK).asBox()
         : defaultValue;
 }
 
@@ -82,7 +82,7 @@ function unwrapOrElse(
     function() pure returns (Box) fn
 ) pure returns (Box) {
     return self.isSome().asBool()
-        ? self.asPrimitive().and(Constants.SMART_POINTER_MASK).asBox()
+        ? self.asPrimitive().and(Constants.BOX_MASK).asBox()
         : fn();
 }
 
