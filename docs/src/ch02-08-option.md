@@ -191,3 +191,4 @@ error IsNone();
 ## Assumptions
 
 - A `Primitive` converted to `Option` is properly constrained before calling [`asOption`](#asoption).
+- `unwrapUnchecked` is called only after performing the necessary checks.
