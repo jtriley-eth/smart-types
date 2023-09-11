@@ -478,6 +478,14 @@ Behaves in the same way as the `byte` instruction.
 function getByte(Primitive self, Primitive index) pure returns (Primitive);
 ```
 
+#### hash
+
+Returns the `keccak256` digest of the argument, using memory scratch space.
+
+```solidity
+function hash(Primitive self) pure returns (Primitive);
+```
+
 #### truthy
 
 Returns `1` if the value is non-zero, otherwise `0`.

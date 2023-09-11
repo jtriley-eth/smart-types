@@ -46,7 +46,8 @@ import {
     rotl,
     retainBits,
     constrainBits,
-    getByte
+    getByte,
+    hash
 } from "src/primitive/Bitwise.sol";
 import {truthy, falsy, logicalNot} from "src/primitive/Logical.sol";
 
@@ -108,6 +109,7 @@ using {
     retainBits,
     constrainBits,
     getByte,
+    hash,
     truthy,
     falsy,
     logicalNot

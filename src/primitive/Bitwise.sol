@@ -59,3 +59,10 @@ function getByte(Primitive self, Primitive index) pure returns (Primitive b) {
         b := byte(index, self)
     }
 }
+
+function hash(Primitive self) pure returns (Primitive digest) {
+    assembly ("memory-safe") {
+        mstore(0x00, self)
+        digest := keccak256(0x00, 0x20)
+    }
+}

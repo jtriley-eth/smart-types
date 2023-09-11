@@ -325,6 +325,13 @@ contract PrimitiveTest is Test, PrimitiveAssertions {
         );
     }
 
+    function testFuzzHash(Primitive value) public {
+        assertEq(
+            value.hash(),
+            keccak256(abi.encodePacked(value.asUint256())).asPrimitive()
+        );
+    }
+
     function testFuzzTruthy(Primitive value) public {
         assertEq(value.truthy().asBool(), value.asUint256() != 0);
     }
