@@ -1,7 +1,7 @@
 # Basic Usage
 
 To demonstrate the usage of this library, we will write a simple example taking advantage of the
-`Primitive`, `Box`, and `Option` types.
+`Primitive`, `MemoryPointer`, and `Option` types.
 
 The `Option` type is a sum type representing a nullable value, it may be either `None` or `Some`, if
 its value is `Some`, then it must also contain some underlying data.
@@ -30,7 +30,7 @@ contract HashFetcher {
 function getCodehash(address target) pure returns (Option) {
     if (target.code.length == 0) return LibOption.None();
     return LibOption.Some(
-        LibBox.mstore(target.codehash.asPrimitive())
+        LibMemoryPointer.mstore(target.codehash.asPrimitive())
     );
 }
 ```
@@ -45,7 +45,7 @@ We check if the `hash` is zero with the `isZero` method, using another zero cost
 abstraction for compatibility with Solidity's built-in `if` statement. If it is nullish, we return
 `None()` from the `LibOption` library.
 
-If the `hash` is nonzero, we write it to a `Box`, which can then be wrapped in the `Some`
+If the `hash` is nonzero, we write it to a `MemoryPointer`, which can then be wrapped in the `Some`
 variant of the `Option` type.
 
 > Note: Using `asPrimitive()` on Solidity's elementary data types requires a 'using' directive in
@@ -64,7 +64,7 @@ using PrimitiveAs for bytes32;
 function getCodehash(address target) pure returns (Option) {
     Primitive hash = target.codehash.asPrimitive();
     if (hash.isZero().asBool()) return LibOption.None();
-    return LibOption.Some(LibBox.mstore(hash));
+    return LibOption.Some(LibMemoryPointer.mstore(hash));
 }
 
 // -- snip --
@@ -76,12 +76,11 @@ implementors must handle it before using the underlying data.
 > Note: Solidity does not enforce this, its type system can be fully subverted, but excluding type
 > system subversion, types such as `Option` must be handled before using the underlying data.
 
-
 The `Option` type includes an `expect` method that reverts with a custom error string when the
-variant is `None` and returns the `Box` if the variant is `Some(Box)`. If `expect`
-does not revert, we have a `Box`, so we read from it using the `read` method. This gives us
-the underlying data, but it is of type `Primitive`. Since our `readCodehash` method returns
-`bytes32`, we can simply use the zero cost `asBytes32` method.
+variant is `None` and returns the `MemoryPointer` if the variant is `Some(MemoryPointer)`. If
+`expect` does not revert, we have a `MemoryPointer`, so we read from it using the `read` method.
+This gives us the underlying data, but it is of type `Primitive`. Since our `readCodehash` method
+returns `bytes32`, we can simply use the zero cost `asBytes32` method.
 
 ```solidity
 // -- snip --

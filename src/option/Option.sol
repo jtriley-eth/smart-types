@@ -2,16 +2,16 @@
 pragma solidity ^0.8.20;
 
 import {Primitive} from "src/primitive/Primitive.sol";
-import {Box, LibBox} from "src/box/Box.sol";
+import {MemoryPointer, LibMemoryPointer} from "src/ptr/MemoryPointer.sol";
 import {Members} from "src/option/Members.sol";
 import {Constants} from "src/option/Constants.sol";
 import {Error} from "src/option/Error.sol";
 
 // option metadata layout
 //
-// | empty | enum | Box |
-// | ----- | ---- | ------------ |
-// | 184   | 8    | 64           |
+// | empty | enum | MemoryPointer |
+// | ----- | ---- | ------------- |
+// | 184   | 8    | 32            |
 type Option is uint256;
 
 using {
@@ -26,14 +26,14 @@ using {
 } for Option global;
 using LibOption for Option global;
 using LibOption for Primitive;
-using LibBox for Primitive;
+using LibMemoryPointer for Primitive;
 
 library LibOption {
     function None() internal pure returns (Option) {
         return Option.wrap(0);
     }
 
-    function Some(Box ptr) internal pure returns (Option) {
+    function Some(MemoryPointer ptr) internal pure returns (Option) {
         return Members.Some.asPrimitive()
             .shl(Constants.ENUM_OFFSET)
             .or(ptr.asPrimitive())
@@ -58,39 +58,31 @@ function isNone(Option self) pure returns (Primitive) {
         .isZero();
 }
 
-function expect(Option self, string memory message) pure returns (Box) {
+function expect(Option self, string memory message) pure returns (MemoryPointer) {
     if (self.isNone().asBool()) revert(message);
-    return self.asPrimitive()
-        .and(Constants.BOX_MASK)
-        .asBox();
+    return self.unwrapUnchecked();
 }
 
-function unwrap(Option self) pure returns (Box) {
+function unwrap(Option self) pure returns (MemoryPointer) {
     if (self.isNone().asBool()) revert Error.IsNone();
-    return self.asPrimitive()
-        .and(Constants.BOX_MASK)
-        .asBox();
+    return self.unwrapUnchecked();
 }
 
-function unwrapOr(Option self, Box defaultValue) pure returns (Box) {
-    return self.isSome().asBool()
-        ? self.asPrimitive().and(Constants.BOX_MASK).asBox()
-        : defaultValue;
+function unwrapOr(Option self, MemoryPointer defaultValue) pure returns (MemoryPointer) {
+    return self.isSome().asBool() ? self.unwrapUnchecked() : defaultValue;
 }
 
 function unwrapOrElse(
     Option self,
-    function() pure returns (Box) fn
-) pure returns (Box) {
-    return self.isSome().asBool()
-        ? self.asPrimitive().and(Constants.BOX_MASK).asBox()
-        : fn();
+    function() pure returns (MemoryPointer) fn
+) pure returns (MemoryPointer) {
+    return self.isSome().asBool() ? self.unwrapUnchecked() : fn();
 }
 
-function unwrapUnchecked(Option self) pure returns (Box) {
+function unwrapUnchecked(Option self) pure returns (MemoryPointer) {
     return self.asPrimitive()
-        .and(Constants.BOX_MASK)
-        .asBox();
+        .and(Constants.PTR_MASK)
+        .asMemoryPointer();
 }
 
 function asPrimitive(Option self) pure returns (Primitive) {

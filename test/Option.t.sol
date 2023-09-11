@@ -5,12 +5,12 @@ import "lib/forge-std/src/Test.sol";
 import "test/base/PrimitiveAssertions.sol";
 import "test/mock/MockOption.sol";
 
-import {Primitive, PrimitiveAs, Box, LibBox, Option, OptionConstants, OptionError, LibOption} from "src/Prelude.sol";
+import {Primitive, PrimitiveAs, MemoryPointer, LibMemoryPointer, Option, OptionConstants, OptionError, LibOption} from "src/Prelude.sol";
 
 contract OptionTest is Test, PrimitiveAssertions {
-    using LibOption for Box;
+    using LibOption for MemoryPointer;
     using LibOption for Primitive;
-    using LibBox for Primitive;
+    using LibMemoryPointer for Primitive;
     using PrimitiveAs for *;
 
     MockOption mock;
@@ -23,9 +23,9 @@ contract OptionTest is Test, PrimitiveAssertions {
         assertEq(LibOption.None().asPrimitive(), Primitive.wrap(0));
     }
 
-    function testFuzzSome(uint64 ptr) public {
+    function testFuzzSome(uint32 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox()).asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer()).asPrimitive(),
             ptr.asPrimitive().or(Primitive.wrap(1).shl(OptionConstants.ENUM_OFFSET))
         );
     }
@@ -34,50 +34,50 @@ contract OptionTest is Test, PrimitiveAssertions {
         assertEq(value.asOption().asPrimitive(), value);
     }
 
-    function testFuzzIsSome(uint64 ptr) public {
-        assertTrue(LibOption.Some(ptr.asPrimitive().asBox()).isSome().asBool());
+    function testFuzzIsSome(uint32 ptr) public {
+        assertTrue(LibOption.Some(ptr.asPrimitive().asMemoryPointer()).isSome().asBool());
     }
 
     function testIsNone() public {
         assertTrue(LibOption.None().isNone().asBool());
     }
 
-    function testFuzzExpect(uint64 ptr, string calldata message) public {
+    function testFuzzExpect(uint32 ptr, string calldata message) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox()).expect("").asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer()).expect("").asPrimitive(),
             ptr.asPrimitive()
         );
         vm.expectRevert(bytes(message));
         mock.expect(LibOption.None(), message);
     }
 
-    function testFuzzUnwrap(uint64 ptr) public {
+    function testFuzzUnwrap(uint32 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox()).unwrap().asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer()).unwrap().asPrimitive(),
             ptr.asPrimitive()
         );
         vm.expectRevert(OptionError.IsNone.selector);
         mock.unwrap(LibOption.None());
     }
 
-    function testFuzzUnwrapOr(uint64 ptr, uint64 defaultPtr) public {
+    function testFuzzUnwrapOr(uint32 ptr, uint32 defaultPtr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox())
-                .unwrapOr(defaultPtr.asPrimitive().asBox())
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer())
+                .unwrapOr(defaultPtr.asPrimitive().asMemoryPointer())
                 .asPrimitive(),
             ptr.asPrimitive()
         );
         assertEq(
             LibOption.None()
-                .unwrapOr(defaultPtr.asPrimitive().asBox())
+                .unwrapOr(defaultPtr.asPrimitive().asMemoryPointer())
                 .asPrimitive(),
             defaultPtr.asPrimitive()
         );
     }
 
-    function testFuzzUnwrapOrElse(uint64 ptr) public {
+    function testFuzzUnwrapOrElse(uint32 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox())
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer())
                 .unwrapOrElse(defaultValue)
                 .asPrimitive(),
             ptr.asPrimitive()
@@ -88,9 +88,9 @@ contract OptionTest is Test, PrimitiveAssertions {
         );
     }
 
-    function testFuzzUnwrapUnchecked(uint64 ptr) public {
+    function testFuzzUnwrapUnchecked(uint32 ptr) public {
         assertEq(
-            LibOption.Some(ptr.asPrimitive().asBox()).unwrapUnchecked().asPrimitive(),
+            LibOption.Some(ptr.asPrimitive().asMemoryPointer()).unwrapUnchecked().asPrimitive(),
             ptr.asPrimitive()
         );
         assertEq(
@@ -99,7 +99,7 @@ contract OptionTest is Test, PrimitiveAssertions {
         );
     }
 
-    function defaultValue() internal pure returns (Box) {
-        return Box.wrap(1);
+    function defaultValue() internal pure returns (MemoryPointer) {
+        return MemoryPointer.wrap(1);
     }
 }

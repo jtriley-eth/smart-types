@@ -3,12 +3,12 @@ pragma solidity 0.8.20;
 
 import "lib/forge-std/src/Test.sol";
 import "test/base/PrimitiveAssertions.sol";
-import {Primitive, PrimitiveAs, Box, LibBox, Fn, LibFn, FnConstants, FnError} from "src/Prelude.sol";
+import {Primitive, PrimitiveAs, MemoryPointer, LibMemoryPointer, Fn, LibFn, FnConstants, FnError} from "src/Prelude.sol";
 
 contract FnTest is Test, PrimitiveAssertions {
     using PrimitiveAs for *;
     using LibFn for *;
-    using LibBox for Primitive;
+    using LibMemoryPointer for Primitive;
 
     function testFuzzToFnZeroArg(uint16 mockDest) public {
         function() pure returns (Primitive) f;
@@ -186,10 +186,7 @@ contract FnTest is Test, PrimitiveAssertions {
             assertTrue(fn.argumentAt(index).isSome());
             assertEq(
                 fn.argumentAt(index).unwrap().asPrimitive(),
-                LibBox.toBox(
-                    fn.argumentsPointer().add(index.mul(FnConstants.ARG_SIZE)),
-                    FnConstants.ARG_SIZE
-                ).asPrimitive()
+                fn.argumentsPointer().add(index.mul(FnConstants.ARG_SIZE))
             );
             assertEq(
                 fn.argumentAt(index).unwrap().read(),

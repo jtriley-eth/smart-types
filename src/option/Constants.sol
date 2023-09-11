@@ -5,7 +5,7 @@ import {Primitive} from "src/primitive/Primitive.sol";
 
 library Constants {
     Primitive internal constant ENUM_MASK = Primitive.wrap(0x01);
-    Primitive internal constant BOX_MASK = Primitive.wrap(0xffffffffffffffff);
+    Primitive internal constant PTR_MASK = Primitive.wrap(0xffffffff);
 
-    Primitive internal constant ENUM_OFFSET = Primitive.wrap(64);
+    Primitive internal constant ENUM_OFFSET = Primitive.wrap(32);
 }
